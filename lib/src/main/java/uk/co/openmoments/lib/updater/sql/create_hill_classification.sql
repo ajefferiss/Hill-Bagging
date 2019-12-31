@@ -1,0 +1,1 @@
+CREATE TABLE IF NOT EXISTS hill_classification(id INTEGER PRIMARY KEY, hill_id INTEGER, classification_id INTEGER, FOREIGN KEY(hill_id) REFERENCES hill(id), FOREIGN KEY(classification_id) REFERENCES classification(id));
