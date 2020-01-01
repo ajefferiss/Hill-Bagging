@@ -1,0 +1,10 @@
+apply plugin: 'java-library'
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation group: 'org.xerial', name: 'sqlite-jdbc', version: '3.30.1'
+    implementation group: 'com.opencsv', name: 'opencsv', version: '5.0'
+}
+
+sourceCompatibility = "8"
+targetCompatibility = "8"

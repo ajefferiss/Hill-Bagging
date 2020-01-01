@@ -1,0 +1,1 @@
+CREATE TABLE hills_walked(id INTEGER PRIMARY KEY, hill_id INTEGER, walked_date DATE, FOREIGN KEY(hill_id) REFERENCES hill(id));
