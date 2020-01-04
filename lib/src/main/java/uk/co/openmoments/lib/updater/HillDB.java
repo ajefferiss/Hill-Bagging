@@ -18,7 +18,7 @@ import java.util.Map;
 public class HillDB {
 
     public static String DATABASE_NAME = "hill_bagging.db";
-    private static String RELATIVE_PATH = "app/src/main/assets/";
+    private static String RELATIVE_PATH = "app/src/main/assets/database/";
     private static String SQL_PATH = "lib/src/main/java/uk/co/openmoments/lib/updater/sql/";
     private String db_uri = new String();
     private boolean database_exists;
