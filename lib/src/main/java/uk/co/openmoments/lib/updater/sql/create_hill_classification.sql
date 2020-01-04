@@ -1,1 +1,3 @@
-CREATE TABLE IF NOT EXISTS hill_classification(id INTEGER PRIMARY KEY, hill_id INTEGER, classification_id INTEGER, FOREIGN KEY(hill_id) REFERENCES hill(id), FOREIGN KEY(classification_id) REFERENCES classification(id));
+CREATE TABLE IF NOT EXISTS hill_classification(hcId INTEGER PRIMARY KEY, hill_id INTEGER, classification_id INTEGER, FOREIGN KEY(hill_id) REFERENCES hill(hId), FOREIGN KEY(classification_id) REFERENCES classification(cId));
+CREATE INDEX hill_classification_hill_id_idx ON hill_classification (hill_id);
+CREATE INDEX hill_classification_classification_id_idx ON hill_classification (classification_id);

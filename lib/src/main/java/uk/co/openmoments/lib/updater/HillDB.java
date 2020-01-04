@@ -89,7 +89,7 @@ public class HillDB {
     }
 
     private void performUpdate(String hillsCSV, Connection conn) {
-
+        System.out.println("Updating hill entries...");
         try (CSVReader reader = new CSVReader(new FileReader(hillsCSV))){
             reader.readAll().stream().skip(1).forEach(line -> {
                 try {
@@ -158,10 +158,10 @@ public class HillDB {
 
         // Process the classfications
         Map<String, Integer> knownClassifications = new HashMap<>();
-        sql = "SELECT id, classification FROM classification";
+        sql = "SELECT cId, classification FROM classification";
         result = statement.executeQuery(sql);
         while (result.next()) {
-            knownClassifications.put(result.getString("classification"), result.getInt("id"));
+            knownClassifications.put(result.getString("classification"), result.getInt("cId"));
         }
 
         sql = "DELETE FROM hill_classification WHERE hill_id = " + hillNumber;
