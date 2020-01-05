@@ -174,8 +174,11 @@ public class HillDB {
         sql = "DELETE FROM hill_classification WHERE hill_id = " + hillNumber;
         statement.execute(sql);
 
-        String[] classifications = line[hillColMap.get(HillCols.CLASSIFICATION)].split(",");
+        String[] classifications = line[hillColMap.get(HillCols.CLASSIFICATION)].trim().split(",");
         for (String classification : classifications) {
+            if (classification.isEmpty() || knownClassifications.get(classification) == null) {
+                continue;
+            }
             sql = "INSERT INTO hill_classification (hill_id, classification_id) VALUES(" + hillNumber + ", " + knownClassifications.get(classification) + ");";
             statement.execute(sql);
         }
