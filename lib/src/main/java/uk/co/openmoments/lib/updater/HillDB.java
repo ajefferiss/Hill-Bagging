@@ -22,6 +22,7 @@ public class HillDB {
     private static String SQL_PATH = "lib/src/main/java/uk/co/openmoments/lib/updater/sql/";
     private String db_uri = new String();
     private boolean database_exists;
+    private int outputCount = 0;
     private enum HillCols {
         NUMBER, NAME, REGION, AREA, TOPO_SEL, COUNTY, CLASSIFICATION, METRES, FEET, HILL_BAG_URL, LATITUDE, LONGITUDE
     }
@@ -117,6 +118,12 @@ public class HillDB {
     }
 
     private void processHill(String[] line, Connection conn) throws SQLException {
+        System.out.print(".");
+        if (outputCount == 50) {
+            System.out.println();
+            outputCount = 0;
+        }
+        outputCount++;
 
         Statement statement = conn.createStatement();
         int hillNumber = Integer.valueOf(line[hillColMap.get(HillCols.NUMBER)]);
