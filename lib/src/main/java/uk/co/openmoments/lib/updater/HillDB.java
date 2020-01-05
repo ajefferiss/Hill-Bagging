@@ -138,7 +138,7 @@ public class HillDB {
             sql = "UPDATE hill SET name = \"" + line[hillColMap.get(HillCols.NAME)] + "\", " +
                 "region = \"" + line[hillColMap.get(HillCols.REGION)] + "\", " +
                 "area = \"" + line[hillColMap.get(HillCols.AREA)] + "\", " +
-                "topo_selection = \"" + line[hillColMap.get(HillCols.TOPO_SEL)] + "\", " +
+                "topo_section = \"" + line[hillColMap.get(HillCols.TOPO_SEL)] + "\", " +
                 "county = \"" + line[hillColMap.get(HillCols.COUNTY)] + "\", " +
                 "metres = " + metres + ", " +
                 "feet = " + feet + ", " +
@@ -147,7 +147,7 @@ public class HillDB {
                 "longitude = \"" + line[hillColMap.get(HillCols.LONGITUDE)] + "\" " +
                 "WHERE number = " + hillNumber;
         } else {
-            sql = "INSERT INTO hill(number, name, region, area, topo_selection, county, metres, feet, hill_url, latitude, longitude) VALUES(" +
+            sql = "INSERT INTO hill(number, name, region, area, topo_section, county, metres, feet, hill_url, latitude, longitude) VALUES(" +
                     hillNumber + ", " +
                     "\"" + line[hillColMap.get(HillCols.NAME)] + "\", " +
                     "\"" + line[hillColMap.get(HillCols.REGION)] + "\", " +
