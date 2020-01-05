@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS classification (cId INTEGER PRIMARY KEY, classification TEXT, description TEXT);
+CREATE TABLE IF NOT EXISTS classification (cId INTEGER PRIMARY KEY NOT NULL, classification TEXT, description TEXT);
 INSERT INTO classification(classification, description) VALUES('Ma', 'Marilyn');
 INSERT INTO classification(classification, description) VALUES('Hu', 'Hump');
 INSERT INTO classification(classification, description) VALUES('Sim', 'Simm');
