@@ -4,18 +4,25 @@ import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.ForeignKey;
+import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
-@Entity(tableName = "hill_classification", foreignKeys = {
-        @ForeignKey(entity = Hill.class, parentColumns = "hId", childColumns = "hill_id"),
-        @ForeignKey(entity = Classification.class, parentColumns = "cId", childColumns = "classification_id")
-})
+@Entity(tableName = "hill_classification",
+        foreignKeys = {
+            @ForeignKey(entity = Hill.class, parentColumns = "hId", childColumns = "hill_id"),
+            @ForeignKey(entity = Classification.class, parentColumns = "cId", childColumns = "classification_id")
+        },
+        indices = {
+            @Index(name="hill_classification_hill_id_idx", value={"hill_id"}),
+            @Index(name="hill_classification_classification_id_idx", value={"classification_id"})
+        }
+)
 public class HillClassification {
 
     @PrimaryKey(autoGenerate = true)
     @NonNull
-    @ColumnInfo(name = "id")
-    private int id;
+    @ColumnInfo(name = "hcId")
+    private int hcId;
 
     @ColumnInfo(name = "hill_id")
     private int hillId;
@@ -23,18 +30,18 @@ public class HillClassification {
     @ColumnInfo(name = "classification_id")
     private int classificationId;
 
-    public HillClassification(int id, int hillId, int classificationId) {
-        this.id = id;
+    public HillClassification(int hcId, int hillId, int classificationId) {
+        this.hcId = hcId;
         this.hillId = hillId;
         this.classificationId = classificationId;
     }
 
-    public int getId() {
-        return id;
+    public int getHcId() {
+        return hcId;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setHcId(int hcId) {
+        this.hcId = hcId;
     }
 
     public int getHillId() {

@@ -4,11 +4,15 @@ import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.ForeignKey;
+import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
-@Entity(tableName = "hills_walked", foreignKeys = {
-        @ForeignKey(entity = Hill.class, parentColumns = "hId", childColumns = "hill_id")
-})
+import java.sql.Date;
+
+@Entity(tableName = "hills_walked",
+        foreignKeys = {@ForeignKey(entity = Hill.class, parentColumns = "hId", childColumns = "hill_id")},
+        indices = {@Index(name="hills_walked_hill_id_idx", value={"hill_id"})}
+)
 public class HillsWalked {
 
     @PrimaryKey(autoGenerate = true)
@@ -20,9 +24,10 @@ public class HillsWalked {
     private int hillId;
 
     @ColumnInfo(name = "walked_date")
-    private String walkedDate;
+    @NonNull
+    private Date walkedDate;
 
-    public HillsWalked(int id, int hillId, String walkedDate) {
+    public HillsWalked(int id, int hillId, Date walkedDate) {
         this.id = id;
         this.hillId = hillId;
         this.walkedDate = walkedDate;
@@ -44,11 +49,11 @@ public class HillsWalked {
         this.hillId = hillId;
     }
 
-    public String getWalkedDate() {
+    public Date getWalkedDate() {
         return walkedDate;
     }
 
-    public void setWalkedDate(String walkedDate) {
+    public void setWalkedDate(Date walkedDate) {
         this.walkedDate = walkedDate;
     }
 }

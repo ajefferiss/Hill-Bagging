@@ -13,9 +13,11 @@ public class Hill {
     @ColumnInfo(name = "hId")
     private int id;
 
+    @NonNull
     @ColumnInfo(name = "number")
     private int hillBaggingId;
 
+    @NonNull
     @ColumnInfo(name = "name")
     private String name;
 
@@ -37,13 +39,16 @@ public class Hill {
     @ColumnInfo(name = "feet")
     private float feet;
 
+    @ColumnInfo(name = "hill_url")
+    private String hillURL;
+
     @ColumnInfo(name = "latitude")
     private String latitude;
 
     @ColumnInfo(name = "longitude")
     private String longitude;
 
-    public Hill(int id, int hillBaggingId, String name, String region, String area, String topOSelection, String county, float metres, float feet, String latitude, String longitude) {
+    public Hill(int id, int hillBaggingId, String name, String region, String area, String topOSelection, String county, float metres, float feet, String hillURL, String latitude, String longitude) {
         this.id = id;
         this.hillBaggingId = hillBaggingId;
         this.name = name;
@@ -53,6 +58,7 @@ public class Hill {
         this.county = county;
         this.metres = metres;
         this.feet = feet;
+        this.hillURL = hillURL;
         this.latitude = latitude;
         this.longitude = longitude;
     }
@@ -128,6 +134,10 @@ public class Hill {
     public void setFeet(float feet) {
         this.feet = feet;
     }
+
+    public String getHillURL() { return hillURL; }
+
+    public void setHillURL(String hillURL) { this.hillURL = hillURL; }
 
     public String getLatitude() {
         return latitude;

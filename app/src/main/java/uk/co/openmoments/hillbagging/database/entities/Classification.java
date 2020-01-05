@@ -13,15 +13,15 @@ public class Classification {
     @ColumnInfo(name = "cId")
     private int id;
 
-    @ColumnInfo(name = "text")
-    private String text;
+    @ColumnInfo(name = "classification")
+    private String classification;
 
     @ColumnInfo(name = "description")
     private String description;
 
-    public Classification(int id, String text, String description) {
+    public Classification(int id, String classification, String description) {
         this.id = id;
-        this.text = text;
+        this.classification = classification;
         this.description = description;
     }
 
@@ -33,12 +33,12 @@ public class Classification {
         this.id = id;
     }
 
-    public String getText() {
-        return text;
+    public String getClassification() {
+        return classification;
     }
 
-    public void setText(String text) {
-        this.text = text;
+    public void setClassification(String classification) {
+        this.classification = classification;
     }
 
     public String getDescription() {
