@@ -14,8 +14,8 @@ public interface ClassificationDAO {
     @Query("SELECT * FROM classification")
     List<Classification> getAll();
 
-    @Query("SELECT * FROM classification WHERE text IN (:textIds)")
-    List<Classification> getAllByText(String[] textIds);
+    @Query("SELECT * FROM classification WHERE classification IN (:classifications)")
+    List<Classification> getAllByText(String[] classifications);
 
     @Insert
     void insertAll(Classification... classifications);
