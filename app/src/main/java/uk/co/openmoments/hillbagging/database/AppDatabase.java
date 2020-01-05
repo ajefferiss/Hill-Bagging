@@ -1,8 +1,16 @@
 package uk.co.openmoments.hillbagging.database;
 
-import androidx.room.Database;
-import androidx.room.RoomDatabase;
+import android.content.Context;
 
+import androidx.room.Database;
+import androidx.room.Room;
+import androidx.room.RoomDatabase;
+import androidx.room.TypeConverters;
+
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
+import uk.co.openmoments.hillbagging.database.converters.DateConverter;
 import uk.co.openmoments.hillbagging.database.dao.ClassificationDAO;
 import uk.co.openmoments.hillbagging.database.dao.HillClassificationDAO;
 import uk.co.openmoments.hillbagging.database.dao.HillDao;
@@ -22,4 +30,22 @@ public abstract class AppDatabase extends RoomDatabase {
     public abstract HillsWalkedDAO hillsWalkedDAO();
 
     public abstract HillClassificationDAO hillClassificationDAO();
+
+    private static volatile AppDatabase INSTANCE;
+    private static final int NUMBER_OF_THREATS = 4;
+    static final ExecutorService databaseWriteExecutor = Executors.newFixedThreadPool(NUMBER_OF_THREATS);
+
+    public static AppDatabase getDatabase(final Context context) {
+        if (INSTANCE == null) {
+            synchronized (AppDatabase.class) {
+                if (INSTANCE == null) {
+                    INSTANCE = Room.databaseBuilder(context.getApplicationContext(),
+                            AppDatabase.class,
+                            "hill_bagging.db"
+                    ).createFromAsset("database/hill_bagging.db").build();
+                }
+            }
+        }
+        return INSTANCE;
+    }
 }
