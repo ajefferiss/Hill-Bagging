@@ -18,10 +18,11 @@ import java.util.Map;
 public class HillDB {
 
     public static String DATABASE_NAME = "hill_bagging.db";
-    private static String RELATIVE_PATH = "app/src/main/assets/";
+    private static String RELATIVE_PATH = "app/src/main/assets/database/";
     private static String SQL_PATH = "lib/src/main/java/uk/co/openmoments/lib/updater/sql/";
     private String db_uri = new String();
     private boolean database_exists;
+    private int outputCount = 0;
     private enum HillCols {
         NUMBER, NAME, REGION, AREA, TOPO_SEL, COUNTY, CLASSIFICATION, METRES, FEET, HILL_BAG_URL, LATITUDE, LONGITUDE
     }
@@ -89,7 +90,7 @@ public class HillDB {
     }
 
     private void performUpdate(String hillsCSV, Connection conn) {
-
+        System.out.println("Updating hill entries...");
         try (CSVReader reader = new CSVReader(new FileReader(hillsCSV))){
             reader.readAll().stream().skip(1).forEach(line -> {
                 try {
@@ -117,6 +118,12 @@ public class HillDB {
     }
 
     private void processHill(String[] line, Connection conn) throws SQLException {
+        System.out.print(".");
+        if (outputCount == 50) {
+            System.out.println();
+            outputCount = 0;
+        }
+        outputCount++;
 
         Statement statement = conn.createStatement();
         int hillNumber = Integer.valueOf(line[hillColMap.get(HillCols.NUMBER)]);
@@ -131,7 +138,7 @@ public class HillDB {
             sql = "UPDATE hill SET name = \"" + line[hillColMap.get(HillCols.NAME)] + "\", " +
                 "region = \"" + line[hillColMap.get(HillCols.REGION)] + "\", " +
                 "area = \"" + line[hillColMap.get(HillCols.AREA)] + "\", " +
-                "topo_selection = \"" + line[hillColMap.get(HillCols.TOPO_SEL)] + "\", " +
+                "topo_section = \"" + line[hillColMap.get(HillCols.TOPO_SEL)] + "\", " +
                 "county = \"" + line[hillColMap.get(HillCols.COUNTY)] + "\", " +
                 "metres = " + metres + ", " +
                 "feet = " + feet + ", " +
@@ -140,7 +147,7 @@ public class HillDB {
                 "longitude = \"" + line[hillColMap.get(HillCols.LONGITUDE)] + "\" " +
                 "WHERE number = " + hillNumber;
         } else {
-            sql = "INSERT INTO hill(number, name, region, area, topo_selection, county, metres, feet, hill_url, latitude, longitude) VALUES(" +
+            sql = "INSERT INTO hill(number, name, region, area, topo_section, county, metres, feet, hill_url, latitude, longitude) VALUES(" +
                     hillNumber + ", " +
                     "\"" + line[hillColMap.get(HillCols.NAME)] + "\", " +
                     "\"" + line[hillColMap.get(HillCols.REGION)] + "\", " +
@@ -158,17 +165,20 @@ public class HillDB {
 
         // Process the classfications
         Map<String, Integer> knownClassifications = new HashMap<>();
-        sql = "SELECT id, classification FROM classification";
+        sql = "SELECT cId, classification FROM classification";
         result = statement.executeQuery(sql);
         while (result.next()) {
-            knownClassifications.put(result.getString("classification"), result.getInt("id"));
+            knownClassifications.put(result.getString("classification"), result.getInt("cId"));
         }
 
         sql = "DELETE FROM hill_classification WHERE hill_id = " + hillNumber;
         statement.execute(sql);
 
-        String[] classifications = line[hillColMap.get(HillCols.CLASSIFICATION)].split(",");
+        String[] classifications = line[hillColMap.get(HillCols.CLASSIFICATION)].trim().split(",");
         for (String classification : classifications) {
+            if (classification.isEmpty() || knownClassifications.get(classification) == null) {
+                continue;
+            }
             sql = "INSERT INTO hill_classification (hill_id, classification_id) VALUES(" + hillNumber + ", " + knownClassifications.get(classification) + ");";
             statement.execute(sql);
         }
