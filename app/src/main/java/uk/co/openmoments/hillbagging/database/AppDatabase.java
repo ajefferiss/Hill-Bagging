@@ -13,6 +13,7 @@ import uk.co.openmoments.hillbagging.database.entities.HillClassification;
 import uk.co.openmoments.hillbagging.database.entities.HillsWalked;
 
 @Database(entities = {Hill.class, Classification.class, HillsWalked.class, HillClassification.class}, version = 1)
+@TypeConverters({DateConverter.class})
 public abstract class AppDatabase extends RoomDatabase {
     public abstract HillDao hillDao();
 
