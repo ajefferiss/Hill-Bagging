@@ -42,7 +42,7 @@ public abstract class AppDatabase extends RoomDatabase {
                     INSTANCE = Room.databaseBuilder(context.getApplicationContext(),
                             AppDatabase.class,
                             "hill_bagging.db"
-                    ).createFromAsset("database/hill_bagging.db").build();
+                    ).createFromAsset("database/hill_bagging.db").allowMainThreadQueries().build();
                 }
             }
         }
