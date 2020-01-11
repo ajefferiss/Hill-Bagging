@@ -3,4 +3,6 @@
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
+    <string name="number_of_walked_hills">You have current walked %1$2d hills (%2$.2f%%). The hills you have walked are shown below.</string>
+    <string name="no_hills_walked">You have not walked any hills yet, go bag some!</string>
 </resources>
