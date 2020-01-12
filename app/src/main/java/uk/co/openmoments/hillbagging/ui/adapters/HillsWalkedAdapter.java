@@ -11,11 +11,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
 
 import uk.co.openmoments.hillbagging.R;
-import uk.co.openmoments.hillbagging.database.entities.HillsWalked;
+import uk.co.openmoments.hillbagging.database.entities.HillsWithWalked;
 
-public class HillsWalkedAdapter extends RecyclerView.Adapter<HillsWalkedAdapter.ViewHolder> {
-    private List<HillsWalked> mDataSet;
-    private Context context;
+public class HillsWalkedAdapter extends EmptyRecyclerView.Adapter<HillsWalkedAdapter.ViewHolder> {
+    private List<HillsWithWalked> mDataSet;
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         public TextView textView;
@@ -51,12 +50,12 @@ public class HillsWalkedAdapter extends RecyclerView.Adapter<HillsWalkedAdapter.
         return mDataSet.size();
     }
 
-    public void setTasks(List<HillsWalked> hillsWalked) {
+    public void setTasks(List<HillsWithWalked> hillsWalked) {
         mDataSet = hillsWalked;
         notifyDataSetChanged();
     }
 
-    public List<HillsWalked> getTasks() {
+    public List<HillsWithWalked> getTasks() {
         return mDataSet;
     }
 }

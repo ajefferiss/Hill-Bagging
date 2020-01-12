@@ -1,5 +1,6 @@
 package uk.co.openmoments.hillbagging.database.dao;
 
+import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
@@ -16,8 +17,8 @@ public interface HillDao {
     @Query("SELECT * FROM hill")
     List<HillWithClassification> getAll();
 
-    @Query("SELECT * FROM hill")
-    List<HillsWithWalked> getAllWalked();
+    @Query("SELECT h.hId, h.number, h.name, h.region, h.area, h.topo_section, h.county, h.metres, h.feet, h.hill_url, h.latitude, h.longitude, w.walked_date FROM hill h, hills_walked w WHERE h.hId = w.hill_id ORDER BY w.walked_date DESC")
+    LiveData<List<HillsWithWalked>> getAllWalked();
 
     @Query("SELECT COUNT(*) FROM hill")
     int getHillCount();

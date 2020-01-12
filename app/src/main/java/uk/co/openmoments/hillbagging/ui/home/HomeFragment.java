@@ -18,17 +18,13 @@ import java.util.List;
 
 import uk.co.openmoments.hillbagging.R;
 import uk.co.openmoments.hillbagging.database.AppDatabase;
-import uk.co.openmoments.hillbagging.database.dao.HillDao;
-import uk.co.openmoments.hillbagging.database.dao.HillsWalkedDAO;
-import uk.co.openmoments.hillbagging.database.entities.HillsWalked;
+import uk.co.openmoments.hillbagging.database.entities.HillsWithWalked;
 import uk.co.openmoments.hillbagging.ui.adapters.HillsWalkedAdapter;
 import uk.co.openmoments.hillbagging.ui.views.EmptyRecyclerView;
 
 public class HomeFragment extends Fragment {
 
     private HomeViewModel homeViewModel;
-    private HillDao hillDao;
-    private HillsWalkedDAO hillsWalkedDAO;
     private EmptyRecyclerView recyclerView;
     private HillsWalkedAdapter recyclerViewAdapter;
     private AppDatabase mDatabase;
@@ -63,9 +59,9 @@ public class HomeFragment extends Fragment {
             }
         });
 
-        mDatabase.hillsWalkedDAO().getAll().observe(this, new Observer<List<HillsWalked>>() {
+        mDatabase.hillDao().getAllWalked().observe(this, new Observer<List<HillsWithWalked>>() {
             @Override
-            public void onChanged(@Nullable List<HillsWalked> hillsWalked) {
+            public void onChanged(@Nullable List<HillsWithWalked> hillsWalked) {
                 float percentage = hillsWalked.size() / hillCount;
                 String walkedDesc = getResources().getString(R.string.number_of_walked_hills, hillsWalked.size(), percentage);
                 homeViewModel.setText(walkedDesc);
