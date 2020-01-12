@@ -14,7 +14,6 @@ import uk.co.openmoments.hillbagging.database.converters.DateConverter;
 import uk.co.openmoments.hillbagging.database.dao.ClassificationDAO;
 import uk.co.openmoments.hillbagging.database.dao.HillClassificationDAO;
 import uk.co.openmoments.hillbagging.database.dao.HillDao;
-import uk.co.openmoments.hillbagging.database.dao.HillsWalkedDAO;
 import uk.co.openmoments.hillbagging.database.entities.Classification;
 import uk.co.openmoments.hillbagging.database.entities.Hill;
 import uk.co.openmoments.hillbagging.database.entities.HillClassification;
@@ -26,8 +25,6 @@ public abstract class AppDatabase extends RoomDatabase {
     public abstract HillDao hillDao();
 
     public abstract ClassificationDAO classificationDAO();
-
-    public abstract HillsWalkedDAO hillsWalkedDAO();
 
     public abstract HillClassificationDAO hillClassificationDAO();
 
