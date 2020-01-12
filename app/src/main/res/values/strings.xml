@@ -11,5 +11,4 @@
     <string name="hill_dialog_position">Latitude: %1$s   Longitude: %2$s</string>
     <string name="hill_dialog_view_bagging_url">View Hill Bagging entry</string>
     <string name="hill_dialog_view_map">View on map</string>
-    <string name="google_maps_key" translatable="false"  templateMergeStrategy="preserve">YOUR_KEY_HERE</string>
 </resources>
