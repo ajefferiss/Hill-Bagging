@@ -12,6 +12,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import java.util.List;
@@ -43,13 +44,18 @@ public class HomeFragment extends Fragment {
         homeViewModel = ViewModelProviders.of(this).get(HomeViewModel.class);
 
         recyclerView = root.findViewById(R.id.walked_hills_recycler_view);
-        recyclerViewAdapter = new HillsWalkedAdapter(getContext());
+        recyclerViewAdapter = new HillsWalkedAdapter();
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(
+                getContext(), layoutManager.getOrientation()
+        );
 
         recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        recyclerView.setLayoutManager(layoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setEmptyView(root.findViewById(R.id.empty_hills_walked_view));
         recyclerView.setAdapter(recyclerViewAdapter);
+        recyclerView.addItemDecoration(dividerItemDecoration);
 
         final TextView textView = root.findViewById(R.id.text_home);
         homeViewModel.getText().observe(this, new Observer<String>() {
@@ -65,11 +71,9 @@ public class HomeFragment extends Fragment {
                 float percentage = hillsWalked.size() / hillCount;
                 String walkedDesc = getResources().getString(R.string.number_of_walked_hills, hillsWalked.size(), percentage);
                 homeViewModel.setText(walkedDesc);
-
                 recyclerViewAdapter.setTasks(hillsWalked);
             }
         });
-
 
         return root;
     }
