@@ -12,33 +12,41 @@ import java.util.List;
 
 import uk.co.openmoments.hillbagging.R;
 import uk.co.openmoments.hillbagging.database.entities.HillsWithWalked;
+import uk.co.openmoments.hillbagging.ui.views.EmptyRecyclerView;
 
 public class HillsWalkedAdapter extends EmptyRecyclerView.Adapter<HillsWalkedAdapter.ViewHolder> {
     private List<HillsWithWalked> mDataSet;
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        public TextView textView;
+        public TextView hillName;
+        public TextView hillHeight;
+        public TextView walkedDate;
+
         public ViewHolder(@NonNull final View itemView) {
             super(itemView);
-            textView = itemView.findViewById(R.id.hills_walked_textview);
+            hillName = itemView.findViewById(R.id.hills_walked_hillname);
+            hillHeight = itemView.findViewById(R.id.hills_walked_height);
+            walkedDate = itemView.findViewById(R.id.hills_walked_date);
         }
-    }
-
-    public HillsWalkedAdapter(Context context) {
-        this.context = context;
     }
 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.hills_walked_item, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.hills_walked_item, parent, false);
 
         return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        holder.textView.setText(mDataSet.get(position).getWalkedDate().toString());
+        float metre = mDataSet.get(position).hill.getMetres();
+        float feet = mDataSet.get(position).hill.getFeet();
+        String walkedDate = mDataSet.get(position).hillsWalked.getWalkedDate().toString();
+
+        holder.hillName.setText(mDataSet.get(position).hill.getName());
+        holder.hillHeight.setText(holder.itemView.getContext().getString(R.string.hill_walked_height_desc, metre, feet));
+        holder.walkedDate.setText(holder.itemView.getContext().getString(R.string.hill_walked_date_desc, walkedDate));
     }
 
     @Override
