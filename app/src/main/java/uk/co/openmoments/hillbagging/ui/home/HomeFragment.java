@@ -44,7 +44,7 @@ public class HomeFragment extends Fragment {
         homeViewModel = ViewModelProviders.of(this).get(HomeViewModel.class);
 
         recyclerView = root.findViewById(R.id.walked_hills_recycler_view);
-        recyclerViewAdapter = new HillsWalkedAdapter();
+        recyclerViewAdapter = new HillsWalkedAdapter(getContext());
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(
                 getContext(), layoutManager.getOrientation()

@@ -1,8 +1,10 @@
 package uk.co.openmoments.hillbagging.ui.adapters;
 
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
@@ -11,10 +13,16 @@ import java.util.List;
 import uk.co.openmoments.hillbagging.R;
 import uk.co.openmoments.hillbagging.database.entities.HillsWithWalked;
 import uk.co.openmoments.hillbagging.ui.viewholder.HillsWalkedViewHolder;
+import uk.co.openmoments.hillbagging.ui.viewholder.ItemLongClickListener;
 import uk.co.openmoments.hillbagging.ui.views.EmptyRecyclerView;
 
 public class HillsWalkedAdapter extends EmptyRecyclerView.Adapter<HillsWalkedViewHolder> {
     private List<HillsWithWalked> mDataSet;
+    private Context context;
+
+    public HillsWalkedAdapter(Context context) {
+        this.context = context;
+    }
 
     @NonNull
     @Override
@@ -33,6 +41,12 @@ public class HillsWalkedAdapter extends EmptyRecyclerView.Adapter<HillsWalkedVie
         holder.hillName.setText(mDataSet.get(position).hill.getName());
         holder.hillHeight.setText(holder.itemView.getContext().getString(R.string.hill_walked_height_desc, metre, feet));
         holder.walkedDate.setText(holder.itemView.getContext().getString(R.string.hill_walked_date_desc, walkedDate));
+        holder.setItemLongClickListener(new ItemLongClickListener() {
+            @Override
+            public void onItemLongClick(View view, int pos) {
+               Toast.makeText(context, "Showing details for: " + mDataSet.get(pos).hill.getName(), Toast.LENGTH_LONG).show();
+            }
+        });
     }
 
     @Override
