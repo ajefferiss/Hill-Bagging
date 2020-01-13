@@ -24,7 +24,7 @@ public interface HillDao {
     int getHillCount();
 
     @Query("SELECT * FROM hill WHERE name LIKE :name")
-    List<Hill> searchByName(String name);
+    LiveData<List<Hill>> searchByName(String name);
 
     @Insert
     void insertAll(Hill... hills);

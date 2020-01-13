@@ -21,10 +21,18 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
-    <TextView
-        android:id="@+id/hill_dialog_walked_date"
+    <LinearLayout
+        android:id="@+id/walked_linear_layout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:visibility="gone" >
+
+        <TextView
+            android:id="@+id/hill_dialog_walked_date"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
 
     <TextView
         android:id="@+id/hill_dialog_location"
@@ -41,13 +49,16 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_gravity="center_vertical|center_horizontal"
-            android:text="@string/hill_dialog_view_map" />
+            android:text="@string/hill_dialog_view_map"
+            style="?android:attr/buttonBarButtonStyle" />
 
         <Button
             android:id="@+id/hill_dialog_view_higgbagging_entry"
             android:layout_gravity="center_vertical|center_horizontal"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:text="@string/hill_dialog_view_bagging_url" />
+            android:text="@string/hill_dialog_view_bagging_url"
+            style="?android:attr/buttonBarButtonStyle" />
+
     </LinearLayout>
 </LinearLayout>
