@@ -73,8 +73,8 @@ public class HillsAdapter extends EmptyRecyclerView.Adapter<HillsViewHolder> {
                 tempTextView = dialogView.findViewById(R.id.hill_dialog_walked_date);
                 tempTextView.setText(view.getContext().getString(R.string.hill_walked_date_desc, hillWalkedDate));
 
-                Button hillBaggingButton = dialogView.findViewById(R.id.hill_dialog_view_map);
-                hillBaggingButton.setOnClickListener(new View.OnClickListener() {
+                Button hillButton = dialogView.findViewById(R.id.hill_dialog_view_map);
+                hillButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         Uri gmmIntentUri = Uri.parse(String.format(MAPS_URI, hill.getLatitude(), hill.getLongitude()));
@@ -84,14 +84,16 @@ public class HillsAdapter extends EmptyRecyclerView.Adapter<HillsViewHolder> {
                     }
                 });
 
-                hillBaggingButton = dialogView.findViewById(R.id.hill_dialog_view_higgbagging_entry);
-                hillBaggingButton.setOnClickListener(new View.OnClickListener() {
+                hillButton = dialogView.findViewById(R.id.hill_dialog_view_higgbagging_entry);
+                hillButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         Intent i = new Intent(Intent.ACTION_VIEW).setData(Uri.parse(hill.getHillURL()));
                         context.startActivity(i);
                     }
                 });
+
+
 
                 builder.setView(dialogView)
                     .setNegativeButton(R.string.close, new DialogInterface.OnClickListener() {
