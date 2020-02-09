@@ -9,7 +9,7 @@
     <string name="hill_walked_date_desc">Walked: %1$1s</string>
     <string name="close">Close</string>
     <string name="hill_dialog_position">Latitude: %1$s   Longitude: %2$s</string>
-    <string name="hill_dialog_view_bagging_url">View Hill Bagging entry</string>
+    <string name="hill_dialog_view_bagging_url">View on Hill-Bagging</string>
     <string name="hill_dialog_view_map">View on map</string>
     <string name="no_hill_search_results">No hills match your search</string>
     <string name="hill_search_hint">Find hill by name</string>
