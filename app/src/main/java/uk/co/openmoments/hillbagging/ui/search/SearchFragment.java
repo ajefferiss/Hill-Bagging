@@ -10,13 +10,11 @@ import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -27,7 +25,6 @@ import uk.co.openmoments.hillbagging.R;
 import uk.co.openmoments.hillbagging.database.AppDatabase;
 import uk.co.openmoments.hillbagging.database.entities.Hill;
 import uk.co.openmoments.hillbagging.ui.adapters.HillsAdapter;
-import uk.co.openmoments.hillbagging.ui.adapters.HillsWalkedAdapter;
 import uk.co.openmoments.hillbagging.ui.views.EmptyRecyclerView;
 
 public class SearchFragment extends Fragment {
@@ -62,7 +59,7 @@ public class SearchFragment extends Fragment {
         });
 
         recyclerView = root.findViewById(R.id.search_results_recycler_view);
-        recyclerViewAdapter = new HillsAdapter(getContext());
+        recyclerViewAdapter = new HillsAdapter(getContext(), false);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(
                 getContext(), layoutManager.getOrientation()
@@ -86,7 +83,7 @@ public class SearchFragment extends Fragment {
         mDatabase.hillDao().searchByName(searchValue).observe(this, new Observer<List<Hill>>() {
             @Override
             public void onChanged(@Nullable List<Hill> hills) {
-                recyclerViewAdapter.setTasks(hills);
+                recyclerViewAdapter.setHillsTasks(hills);
             }
         });
     }

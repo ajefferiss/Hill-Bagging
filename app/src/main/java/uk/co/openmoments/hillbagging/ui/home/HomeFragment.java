@@ -20,14 +20,14 @@ import java.util.List;
 import uk.co.openmoments.hillbagging.R;
 import uk.co.openmoments.hillbagging.database.AppDatabase;
 import uk.co.openmoments.hillbagging.database.entities.HillsWithWalked;
-import uk.co.openmoments.hillbagging.ui.adapters.HillsWalkedAdapter;
+import uk.co.openmoments.hillbagging.ui.adapters.HillsAdapter;
 import uk.co.openmoments.hillbagging.ui.views.EmptyRecyclerView;
 
 public class HomeFragment extends Fragment {
 
     private HomeViewModel homeViewModel;
     private EmptyRecyclerView recyclerView;
-    private HillsWalkedAdapter recyclerViewAdapter;
+    private HillsAdapter recyclerViewAdapter;
     private AppDatabase mDatabase;
     private int hillCount;
 
@@ -44,7 +44,7 @@ public class HomeFragment extends Fragment {
         homeViewModel = ViewModelProviders.of(this).get(HomeViewModel.class);
 
         recyclerView = root.findViewById(R.id.walked_hills_recycler_view);
-        recyclerViewAdapter = new HillsWalkedAdapter(getContext());
+        recyclerViewAdapter = new HillsAdapter(getContext(), true);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(
                 getContext(), layoutManager.getOrientation()
@@ -71,7 +71,7 @@ public class HomeFragment extends Fragment {
                 float percentage = hillsWalked.size() / hillCount;
                 String walkedDesc = getResources().getString(R.string.number_of_walked_hills, hillsWalked.size(), percentage);
                 homeViewModel.setText(walkedDesc);
-                recyclerViewAdapter.setTasks(hillsWalked);
+                recyclerViewAdapter.setHillsWalkedTasks(hillsWalked);
             }
         });
 

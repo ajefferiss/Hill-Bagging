@@ -17,38 +17,38 @@ import java.util.List;
 
 import uk.co.openmoments.hillbagging.R;
 import uk.co.openmoments.hillbagging.database.entities.Hill;
+import uk.co.openmoments.hillbagging.database.entities.HillsWithWalked;
 import uk.co.openmoments.hillbagging.ui.viewholder.HillsViewHolder;
 import uk.co.openmoments.hillbagging.ui.viewholder.ItemLongClickListener;
 import uk.co.openmoments.hillbagging.ui.views.EmptyRecyclerView;
 
 public class HillsAdapter extends EmptyRecyclerView.Adapter<HillsViewHolder> {
     private Context context;
-    private List<Hill> mDataSet;
+    private boolean showHillsWalked;
+    private List<Hill> mHillsDataSet;
+    private List<HillsWithWalked> mHillsWalkedDataSet;
+    public final static String MAPS_URI = "https://www.google.com/maps/@?api=1&map_action=map&center=%s,%s&basemap=terrain";
 
-    public HillsAdapter(Context context) {
+    public HillsAdapter(Context context, boolean showHillsWalked) {
         this.context = context;
+        this.showHillsWalked = showHillsWalked;
     }
 
     @NonNull
     @Override
     public HillsViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.hills_walked_item, parent, false);
-
         return new HillsViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull HillsViewHolder holder, int position) {
-        float metre = mDataSet.get(position).getMetres();
-        float feet = mDataSet.get(position).getFeet();
-        String hillUrl = mDataSet.get(position).getHillURL();
-        String latitude = mDataSet.get(position).getLatitude();
-        String longitude = mDataSet.get(position).getLongitude();
+        Hill hill = showHillsWalked ? mHillsWalkedDataSet.get(position).hill : mHillsDataSet.get(position);
+        String hillWalkedDate = showHillsWalked ? mHillsWalkedDataSet.get(position).hillsWalked.getWalkedDate().toString() : "";
 
-
-        holder.hillName.setText(mDataSet.get(position).getName());
-        holder.hillHeight.setText(holder.itemView.getContext().getString(R.string.hill_walked_height_desc, metre, feet));
-        holder.walkedDate.setVisibility(View.GONE);
+        holder.hillName.setText(hill.getName());
+        holder.hillHeight.setText(holder.itemView.getContext().getString(R.string.hill_walked_height_desc, hill.getMetres(), hill.getFeet()));
+        holder.walkedDate.setText(holder.itemView.getContext().getString(R.string.hill_walked_date_desc, hillWalkedDate));
 
         holder.setItemLongClickListener(new ItemLongClickListener() {
             @Override
@@ -56,20 +56,28 @@ public class HillsAdapter extends EmptyRecyclerView.Adapter<HillsViewHolder> {
                 final AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
                 final View dialogView = LayoutInflater.from(view.getContext()).inflate(R.layout.dialog_hill_details, null);
 
+                if (showHillsWalked) {
+                    dialogView.findViewById(R.id.walked_linear_layout).setVisibility(View.VISIBLE);
+                    dialogView.findViewById(R.id.mark_walked_linear_layout).setVisibility(View.GONE);
+                }
+
                 TextView tempTextView = dialogView.findViewById(R.id.hill_dialog_name);
-                tempTextView.setText(mDataSet.get(pos).getName());
+                tempTextView.setText(hill.getName());
 
                 tempTextView = dialogView.findViewById(R.id.hill_dialog_height);
-                tempTextView.setText(view.getContext().getString(R.string.hill_walked_height_desc, metre, feet));
+                tempTextView.setText(view.getContext().getString(R.string.hill_walked_height_desc, hill.getMetres(), hill.getFeet()));
 
                 tempTextView = dialogView.findViewById(R.id.hill_dialog_location);
-                tempTextView.setText(view.getContext().getString(R.string.hill_dialog_position, latitude, longitude));
+                tempTextView.setText(view.getContext().getString(R.string.hill_dialog_position, hill.getLatitude(), hill.getLongitude()));
+
+                tempTextView = dialogView.findViewById(R.id.hill_dialog_walked_date);
+                tempTextView.setText(view.getContext().getString(R.string.hill_walked_date_desc, hillWalkedDate));
 
                 Button hillBaggingButton = dialogView.findViewById(R.id.hill_dialog_view_map);
                 hillBaggingButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Uri gmmIntentUri = Uri.parse(String.format(HillsWalkedAdapter.MAPS_URI, latitude, longitude));
+                        Uri gmmIntentUri = Uri.parse(String.format(MAPS_URI, hill.getLatitude(), hill.getLongitude()));
                         Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
                         mapIntent.setPackage("com.google.android.apps.maps");
                         context.startActivity(mapIntent);
@@ -80,7 +88,7 @@ public class HillsAdapter extends EmptyRecyclerView.Adapter<HillsViewHolder> {
                 hillBaggingButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Intent i = new Intent(Intent.ACTION_VIEW).setData(Uri.parse(hillUrl));
+                        Intent i = new Intent(Intent.ACTION_VIEW).setData(Uri.parse(hill.getHillURL()));
                         context.startActivity(i);
                     }
                 });
@@ -99,19 +107,28 @@ public class HillsAdapter extends EmptyRecyclerView.Adapter<HillsViewHolder> {
 
     @Override
     public int getItemCount() {
-        if (mDataSet == null) {
+        if (showHillsWalked) {
+            if (mHillsWalkedDataSet == null) {
+                return 0;
+            }
+
+            return mHillsWalkedDataSet.size();
+        }
+
+        if (mHillsDataSet == null) {
             return 0;
         }
 
-        return mDataSet.size();
+        return mHillsDataSet.size();
     }
 
-    public void setTasks(List<Hill> hills) {
-        mDataSet = hills;
+    public void setHillsTasks(List<Hill> hills) {
+        mHillsDataSet = hills;
         notifyDataSetChanged();
     }
 
-    public List<Hill> getTasks() {
-        return mDataSet;
+    public void setHillsWalkedTasks(List<HillsWithWalked> hills) {
+        mHillsWalkedDataSet = hills;
+        notifyDataSetChanged();
     }
 }
