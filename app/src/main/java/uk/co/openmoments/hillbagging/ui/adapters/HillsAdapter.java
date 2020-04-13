@@ -168,11 +168,7 @@ public class HillsAdapter extends EmptyRecyclerView.Adapter<HillsViewHolder> imp
         HillsWalked hillWalked = new HillsWalked();
         hillWalked.setHillId(mHillsDataSet.get(currentHillPosition).getHillId());
         hillWalked.setWalkedDate(java.sql.Date.valueOf(value));
-        long[] insertIds = database.hillWalkedDAO().insertAll(hillWalked);
-
-        for (long id : insertIds) {
-            Toast.makeText(context, "Insert: " + id, Toast.LENGTH_LONG).show();
-        }
+        database.hillWalkedDAO().insertAll(hillWalked);
 
         String hillName = mHillsDataSet.get(currentHillPosition).getName();
         Toast.makeText(context, "Walked " + hillName + "on " + value, Toast.LENGTH_LONG).show();
