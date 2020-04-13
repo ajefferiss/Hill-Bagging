@@ -3,8 +3,12 @@
     <string name="title_home">Home</string>
     <string name="title_search">Search</string>
     <string name="title_notifications">Notifications</string>
-    <string name="number_of_walked_hills">You have current walked %1$2d hill(s) (%2$.2f%%). The hill(s) you have walked are shown below.</string>
+    <plurals name="numberOfHillsWalked">
+        <item quantity="one">You have walked %1$2d hill (%2$.2f%%). The hill you have walked is shown below.</item>
+        <item quantity="other">You have walked %1$2d hills (%2$.2f%%). The hills you have walked are shown below.</item>
+    </plurals>
     <string name="no_hills_walked">You have not walked any hills yet, go bag some!</string>
+    <string name="no_hills_walked_desc">You\'ve not walked any hills yet, get out and bag some or Search for hills you\'ve walked before and claim them!</string>
     <string name="hill_walked_height_desc">&lt;b>Height:&lt;/b> %1$.0f(m) %2$.0f(ft)</string>
     <string name="hill_walked_date_desc">&lt;b>Walked:&lt;/b> %1$1s</string>
     <string name="close">Close</string>

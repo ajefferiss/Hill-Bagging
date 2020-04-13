@@ -69,7 +69,10 @@ public class HomeFragment extends Fragment {
             @Override
             public void onChanged(@Nullable List<HillsWithWalked> hillsWalked) {
                 float percentage = hillsWalked.size() / hillCount;
-                String walkedDesc = getResources().getString(R.string.number_of_walked_hills, hillsWalked.size(), percentage);
+                String walkedDesc = getResources().getString(R.string.no_hills_walked);
+                if (hillsWalked.size() > 0) {
+                    walkedDesc = getResources().getQuantityString(R.plurals.numberOfHillsWalked, hillsWalked.size(), hillsWalked.size(), percentage);
+                }
                 homeViewModel.setText(walkedDesc);
                 recyclerViewAdapter.setHillsWalkedTasks(hillsWalked);
             }
