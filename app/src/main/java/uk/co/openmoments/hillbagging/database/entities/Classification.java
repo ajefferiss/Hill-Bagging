@@ -10,8 +10,8 @@ public class Classification {
 
     @PrimaryKey(autoGenerate = true)
     @NonNull
-    @ColumnInfo(name = "cId")
-    private int id;
+    @ColumnInfo(name = "classification_id")
+    private int classificationId;
 
     @ColumnInfo(name = "classification")
     private String classification;
@@ -19,18 +19,18 @@ public class Classification {
     @ColumnInfo(name = "description")
     private String description;
 
-    public Classification(int id, String classification, String description) {
-        this.id = id;
+    public Classification(int classificationId, String classification, String description) {
+        this.classificationId = classificationId;
         this.classification = classification;
         this.description = description;
     }
 
-    public int getId() {
-        return id;
+    public int getClassificationId() {
+        return classificationId;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setClassificationId(int id) {
+        this.classificationId = id;
     }
 
     public String getClassification() {

@@ -165,10 +165,10 @@ public class HillDB {
 
         // Process the classfications
         Map<String, Integer> knownClassifications = new HashMap<>();
-        sql = "SELECT cId, classification FROM classification";
+        sql = "SELECT classification_id, classification FROM classification";
         result = statement.executeQuery(sql);
         while (result.next()) {
-            knownClassifications.put(result.getString("classification"), result.getInt("cId"));
+            knownClassifications.put(result.getString("classification"), result.getInt("classification_id"));
         }
 
         sql = "DELETE FROM hill_classification WHERE hill_id = " + hillNumber;

@@ -10,15 +10,15 @@ import androidx.room.PrimaryKey;
 import java.sql.Date;
 
 @Entity(tableName = "hills_walked",
-        foreignKeys = {@ForeignKey(entity = Hill.class, parentColumns = "hId", childColumns = "hill_id")},
+        foreignKeys = {@ForeignKey(entity = Hill.class, parentColumns = "hill_id", childColumns = "hill_id")},
         indices = {@Index(name="hills_walked_hill_id_idx", value={"hill_id"})}
 )
 public class HillsWalked {
 
     @PrimaryKey(autoGenerate = true)
     @NonNull
-    @ColumnInfo(name = "wId")
-    private int id;
+    @ColumnInfo(name = "walked_id")
+    private int walkedId;
 
     @ColumnInfo(name = "hill_id")
     private int hillId;
@@ -27,18 +27,12 @@ public class HillsWalked {
     @NonNull
     private Date walkedDate;
 
-    public HillsWalked(int id, int hillId, Date walkedDate) {
-        this.id = id;
-        this.hillId = hillId;
-        this.walkedDate = walkedDate;
+    public int getWalkedId() {
+        return walkedId;
     }
 
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
+    public void setWalkedId(int walkedId) {
+        this.walkedId = walkedId;
     }
 
     public int getHillId() {

@@ -11,9 +11,9 @@ public class HillWithClassification {
     public Hill hill;
 
     @Relation(
-            parentColumn = "hId",
+            parentColumn = "hill_id",
             entity = Classification.class,
-            entityColumn = "cId",
+            entityColumn = "classification_id",
             associateBy = @Junction(
                     value = HillClassification.class,
                     parentColumn = "hill_id",
