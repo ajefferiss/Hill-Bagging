@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -54,11 +55,14 @@ public class HillsAdapter extends EmptyRecyclerView.Adapter<HillsViewHolder> imp
     public void onBindViewHolder(@NonNull HillsViewHolder holder, int position) {
         Hill hill = showHillsWalked ? mHillsWalkedDataSet.get(position).hill : mHillsDataSet.get(position);
         String hillWalkedDate = showHillsWalked ? mHillsWalkedDataSet.get(position).hillsWalked.getWalkedDate().toString() : "";
-
+        String tempText;
 
         holder.hillName.setText(hill.getName());
-        holder.hillHeight.setText(holder.itemView.getContext().getString(R.string.hill_walked_height_desc, hill.getMetres(), hill.getFeet()));
-        holder.walkedDate.setText(holder.itemView.getContext().getString(R.string.hill_walked_date_desc, hillWalkedDate));
+        tempText = holder.itemView.getContext().getString(R.string.hill_walked_height_desc, hill.getMetres(), hill.getFeet());
+        holder.hillHeight.setText(Html.fromHtml(tempText, Html.FROM_HTML_MODE_LEGACY));
+
+        tempText = holder.itemView.getContext().getString(R.string.hill_walked_date_desc, hillWalkedDate);
+        holder.walkedDate.setText(Html.fromHtml(tempText, Html.FROM_HTML_MODE_LEGACY));
 
         holder.setItemLongClickListener(new ItemLongClickListener() {
             @Override
@@ -72,17 +76,21 @@ public class HillsAdapter extends EmptyRecyclerView.Adapter<HillsViewHolder> imp
                     dialogView.findViewById(R.id.mark_walked_linear_layout).setVisibility(View.GONE);
                 }
 
+                String tempText;
                 TextView tempTextView = dialogView.findViewById(R.id.hill_dialog_name);
                 tempTextView.setText(hill.getName());
 
                 tempTextView = dialogView.findViewById(R.id.hill_dialog_height);
-                tempTextView.setText(view.getContext().getString(R.string.hill_walked_height_desc, hill.getMetres(), hill.getFeet()));
+                tempText = view.getContext().getString(R.string.hill_walked_height_desc, hill.getMetres(), hill.getFeet());
+                tempTextView.setText(Html.fromHtml(tempText, Html.FROM_HTML_MODE_LEGACY));
 
                 tempTextView = dialogView.findViewById(R.id.hill_dialog_location);
-                tempTextView.setText(view.getContext().getString(R.string.hill_dialog_position, hill.getLatitude(), hill.getLongitude()));
+                tempText = view.getContext().getString(R.string.hill_dialog_position, hill.getLatitude(), hill.getLongitude());
+                tempTextView.setText(Html.fromHtml(tempText, Html.FROM_HTML_MODE_LEGACY));
 
                 tempTextView = dialogView.findViewById(R.id.hill_dialog_walked_date);
-                tempTextView.setText(view.getContext().getString(R.string.hill_walked_date_desc, hillWalkedDate));
+                tempText = view.getContext().getString(R.string.hill_walked_date_desc, hillWalkedDate);
+                tempTextView.setText(Html.fromHtml(tempText, Html.FROM_HTML_MODE_LEGACY));
 
                 Button hillButton = dialogView.findViewById(R.id.hill_dialog_view_map);
                 hillButton.setOnClickListener(new View.OnClickListener() {
