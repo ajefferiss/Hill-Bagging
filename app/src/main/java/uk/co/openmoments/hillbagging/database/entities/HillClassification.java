@@ -9,8 +9,8 @@ import androidx.room.PrimaryKey;
 
 @Entity(tableName = "hill_classification",
         foreignKeys = {
-            @ForeignKey(entity = Hill.class, parentColumns = "hId", childColumns = "hill_id"),
-            @ForeignKey(entity = Classification.class, parentColumns = "cId", childColumns = "classification_id")
+            @ForeignKey(entity = Hill.class, parentColumns = "hill_id", childColumns = "hill_id"),
+            @ForeignKey(entity = Classification.class, parentColumns = "classification_id", childColumns = "classification_id")
         },
         indices = {
             @Index(name="hill_classification_hill_id_idx", value={"hill_id"}),
@@ -21,8 +21,8 @@ public class HillClassification {
 
     @PrimaryKey(autoGenerate = true)
     @NonNull
-    @ColumnInfo(name = "hcId")
-    private int hcId;
+    @ColumnInfo(name = "hill_classification_id")
+    private int hillClassificationId;
 
     @ColumnInfo(name = "hill_id")
     private int hillId;
@@ -30,18 +30,18 @@ public class HillClassification {
     @ColumnInfo(name = "classification_id")
     private int classificationId;
 
-    public HillClassification(int hcId, int hillId, int classificationId) {
-        this.hcId = hcId;
+    public HillClassification(int hillClassificationId, int hillId, int classificationId) {
+        this.hillClassificationId = hillClassificationId;
         this.hillId = hillId;
         this.classificationId = classificationId;
     }
 
-    public int getHcId() {
-        return hcId;
+    public int getHillClassificationId() {
+        return hillClassificationId;
     }
 
-    public void setHcId(int hcId) {
-        this.hcId = hcId;
+    public void setHillClassificationId(int hillClassificationId) {
+        this.hillClassificationId = hillClassificationId;
     }
 
     public int getHillId() {

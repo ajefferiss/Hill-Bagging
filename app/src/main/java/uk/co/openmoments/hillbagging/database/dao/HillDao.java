@@ -17,7 +17,7 @@ public interface HillDao {
     @Query("SELECT * FROM hill")
     List<HillWithClassification> getAll();
 
-    @Query("SELECT h.hId, h.number, h.name, h.region, h.area, h.topo_section, h.county, h.metres, h.feet, h.hill_url, h.latitude, h.longitude, w.walked_date FROM hill h, hills_walked w WHERE h.hId = w.hill_id ORDER BY w.walked_date DESC")
+    @Query("SELECT h.hill_id, h.number, h.name, h.region, h.area, h.topo_section, h.county, h.metres, h.feet, h.hill_url, h.latitude, h.longitude, w.walked_id, w.hill_id, w.walked_date FROM hill h, hills_walked w WHERE h.hill_id = w.hill_id ORDER BY w.walked_date DESC")
     LiveData<List<HillsWithWalked>> getAllWalked();
 
     @Query("SELECT COUNT(*) FROM hill")

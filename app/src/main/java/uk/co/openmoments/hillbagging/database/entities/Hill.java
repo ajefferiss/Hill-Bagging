@@ -10,8 +10,8 @@ public class Hill {
 
     @PrimaryKey(autoGenerate = true)
     @NonNull
-    @ColumnInfo(name = "hId")
-    private int id;
+    @ColumnInfo(name = "hill_id")
+    private int hillId;
 
     @NonNull
     @ColumnInfo(name = "number")
@@ -48,8 +48,8 @@ public class Hill {
     @ColumnInfo(name = "longitude")
     private String longitude;
 
-    public Hill(int id, int hillBaggingId, String name, String region, String area, String topOSelection, String county, float metres, float feet, String hillURL, String latitude, String longitude) {
-        this.id = id;
+    public Hill(int hillId, int hillBaggingId, String name, String region, String area, String topOSelection, String county, float metres, float feet, String hillURL, String latitude, String longitude) {
+        this.hillId = hillId;
         this.hillBaggingId = hillBaggingId;
         this.name = name;
         this.region = region;
@@ -63,12 +63,12 @@ public class Hill {
         this.longitude = longitude;
     }
 
-    public int getId() {
-        return id;
+    public int getHillId() {
+        return hillId;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setHillId(int hillId) {
+        this.hillId = hillId;
     }
 
     public int getHillBaggingId() {
