@@ -1,1 +1,1 @@
-CREATE TABLE hill(hId INTEGER PRIMARY KEY NOT NULL, number INTEGER NOT NULL, name TEXT NOT NULL, region TEXT, area TEXT, topo_section TEXT, county TEXT, metres REAL NOT NULL, feet REAL NOT NULL, hill_url TEXT, latitude TEXT, longitude TEXT);
+CREATE TABLE hill(hill_id INTEGER PRIMARY KEY NOT NULL, number INTEGER NOT NULL, name TEXT NOT NULL, region TEXT, area TEXT, topo_section TEXT, county TEXT, metres REAL NOT NULL, feet REAL NOT NULL, hill_url TEXT, latitude TEXT, longitude TEXT);
