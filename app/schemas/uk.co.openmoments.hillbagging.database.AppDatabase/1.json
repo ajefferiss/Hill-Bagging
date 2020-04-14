@@ -1,0 +1,257 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 1,
+    "identityHash": "e244b83f5ed9c102351e9f3d3576ea1d",
+    "entities": [
+      {
+        "tableName": "hill",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`hill_id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `number` INTEGER NOT NULL, `name` TEXT NOT NULL, `region` TEXT, `area` TEXT, `topo_section` TEXT, `county` TEXT, `metres` REAL NOT NULL, `feet` REAL NOT NULL, `hill_url` TEXT, `latitude` TEXT, `longitude` TEXT)",
+        "fields": [
+          {
+            "fieldPath": "hillId",
+            "columnName": "hill_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "hillBaggingId",
+            "columnName": "number",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "name",
+            "columnName": "name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "region",
+            "columnName": "region",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "area",
+            "columnName": "area",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "topOSelection",
+            "columnName": "topo_section",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "county",
+            "columnName": "county",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "metres",
+            "columnName": "metres",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "feet",
+            "columnName": "feet",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "hillURL",
+            "columnName": "hill_url",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "latitude",
+            "columnName": "latitude",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "longitude",
+            "columnName": "longitude",
+            "affinity": "TEXT",
+            "notNull": false
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "hill_id"
+          ],
+          "autoGenerate": true
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "classification",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`classification_id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `classification` TEXT, `description` TEXT)",
+        "fields": [
+          {
+            "fieldPath": "classificationId",
+            "columnName": "classification_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "classification",
+            "columnName": "classification",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "description",
+            "columnName": "description",
+            "affinity": "TEXT",
+            "notNull": false
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "classification_id"
+          ],
+          "autoGenerate": true
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "hills_walked",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`walked_id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `hill_id` INTEGER NOT NULL, `walked_date` INTEGER NOT NULL, FOREIGN KEY(`hill_id`) REFERENCES `hill`(`hill_id`) ON UPDATE NO ACTION ON DELETE NO ACTION )",
+        "fields": [
+          {
+            "fieldPath": "walkedId",
+            "columnName": "walked_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "hillId",
+            "columnName": "hill_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "walkedDate",
+            "columnName": "walked_date",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "walked_id"
+          ],
+          "autoGenerate": true
+        },
+        "indices": [
+          {
+            "name": "hills_walked_hill_id_idx",
+            "unique": false,
+            "columnNames": [
+              "hill_id"
+            ],
+            "createSql": "CREATE INDEX IF NOT EXISTS `hills_walked_hill_id_idx` ON `${TABLE_NAME}` (`hill_id`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "hill",
+            "onDelete": "NO ACTION",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "hill_id"
+            ],
+            "referencedColumns": [
+              "hill_id"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "hill_classification",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`hill_classification_id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `hill_id` INTEGER NOT NULL, `classification_id` INTEGER NOT NULL, FOREIGN KEY(`hill_id`) REFERENCES `hill`(`hill_id`) ON UPDATE NO ACTION ON DELETE NO ACTION , FOREIGN KEY(`classification_id`) REFERENCES `classification`(`classification_id`) ON UPDATE NO ACTION ON DELETE NO ACTION )",
+        "fields": [
+          {
+            "fieldPath": "hillClassificationId",
+            "columnName": "hill_classification_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "hillId",
+            "columnName": "hill_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "classificationId",
+            "columnName": "classification_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "hill_classification_id"
+          ],
+          "autoGenerate": true
+        },
+        "indices": [
+          {
+            "name": "hill_classification_hill_id_idx",
+            "unique": false,
+            "columnNames": [
+              "hill_id"
+            ],
+            "createSql": "CREATE INDEX IF NOT EXISTS `hill_classification_hill_id_idx` ON `${TABLE_NAME}` (`hill_id`)"
+          },
+          {
+            "name": "hill_classification_classification_id_idx",
+            "unique": false,
+            "columnNames": [
+              "classification_id"
+            ],
+            "createSql": "CREATE INDEX IF NOT EXISTS `hill_classification_classification_id_idx` ON `${TABLE_NAME}` (`classification_id`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "hill",
+            "onDelete": "NO ACTION",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "hill_id"
+            ],
+            "referencedColumns": [
+              "hill_id"
+            ]
+          },
+          {
+            "table": "classification",
+            "onDelete": "NO ACTION",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "classification_id"
+            ],
+            "referencedColumns": [
+              "classification_id"
+            ]
+          }
+        ]
+      }
+    ],
+    "views": [],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'e244b83f5ed9c102351e9f3d3576ea1d')"
+    ]
+  }
+}
