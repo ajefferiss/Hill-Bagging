@@ -3,6 +3,7 @@
     <string name="title_home">Home</string>
     <string name="title_search">Search</string>
     <string name="title_notifications">Notifications</string>
+    <string name="title_settings">Settings</string>
     <plurals name="numberOfHillsWalked">
         <item quantity="one">You have walked %1$2d hill (%2$.2f%%). The hill you have walked is shown below.</item>
         <item quantity="other">You have walked %1$2d hills (%2$.2f%%). The hills you have walked are shown below.</item>
@@ -18,4 +19,13 @@
     <string name="hill_dialog_mark_walked">Mark Walked</string>
     <string name="no_hill_search_results">No hills match your search</string>
     <string name="hill_search_hint">Find hill by name</string>
+
+    <!-- Preference Titles -->
+    <string name="tracking_header">Live Tracking</string>
+
+    <!-- Live Tracking Preferences -->
+    <string name="track_plot_period">Plot period</string>
+    <string name="track_plot_period_summary">Plot your position once ever %1$ss</string>
+    <string name="track_bag_distance">Automatic claim distance</string>
+    <string name="track_bag_distance_summary">Automatically bag hills within %1$sm</string>
 </resources>
