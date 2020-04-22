@@ -22,7 +22,7 @@ public class LiveTrackingFragment extends Fragment {
                              ViewGroup container, Bundle savedInstanceState) {
         liveTrackingViewModel =
                 ViewModelProviders.of(this).get(LiveTrackingViewModel.class);
-        View root = inflater.inflate(R.layout.fragment_notifications, container, false);
+        View root = inflater.inflate(R.layout.fragment_live_tracking, container, false);
         final TextView textView = root.findViewById(R.id.text_notifications);
         liveTrackingViewModel.getText().observe(this, new Observer<String>() {
             @Override
