@@ -32,4 +32,5 @@
     <!-- Permission explanations -->
     <string name="perm_required_title">Permission Required</string>
     <string name="perm_fine_location_detail">Access is required to your devices fine location so that it can gain GPS coordinates while tracking a live walk. Without this permission live tracking is not possible.</string>
+    <string name="perm_btn_request">Request Permissions</string>
 </resources>
