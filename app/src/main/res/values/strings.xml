@@ -2,7 +2,7 @@
     <string name="app_name">Hill Tracker</string>
     <string name="title_home">Home</string>
     <string name="title_search">Search</string>
-    <string name="title_notifications">Notifications</string>
+    <string name="title_live_tracking">Live Tracking</string>
     <string name="title_settings">Settings</string>
     <plurals name="numberOfHillsWalked">
         <item quantity="one">You have walked %1$2d hill (%2$.2f%%). The hill you have walked is shown below.</item>

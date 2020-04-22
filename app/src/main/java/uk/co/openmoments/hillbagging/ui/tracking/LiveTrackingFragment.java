@@ -1,4 +1,4 @@
-package uk.co.openmoments.hillbagging.ui.notifications;
+package uk.co.openmoments.hillbagging.ui.tracking;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -14,17 +14,17 @@ import androidx.lifecycle.ViewModelProviders;
 
 import uk.co.openmoments.hillbagging.R;
 
-public class NotificationsFragment extends Fragment {
+public class LiveTrackingFragment extends Fragment {
 
-    private NotificationsViewModel notificationsViewModel;
+    private LiveTrackingViewModel liveTrackingViewModel;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        notificationsViewModel =
-                ViewModelProviders.of(this).get(NotificationsViewModel.class);
+        liveTrackingViewModel =
+                ViewModelProviders.of(this).get(LiveTrackingViewModel.class);
         View root = inflater.inflate(R.layout.fragment_notifications, container, false);
         final TextView textView = root.findViewById(R.id.text_notifications);
-        notificationsViewModel.getText().observe(this, new Observer<String>() {
+        liveTrackingViewModel.getText().observe(this, new Observer<String>() {
             @Override
             public void onChanged(@Nullable String s) {
                 textView.setText(s);
