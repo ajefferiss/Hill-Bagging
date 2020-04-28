@@ -39,5 +39,5 @@
     <string name="perm_btn_request">Request Permissions</string>
 
     <!-- Notifications -->
-    <string name="notification_text">You\'ve just bagged a hill!</string>
+    <string name="notification_text">Tracking your walking and bagging hills as you go!</string>
 </resources>
