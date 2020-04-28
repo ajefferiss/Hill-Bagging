@@ -40,6 +40,9 @@ public class MainActivity extends AppCompatActivity {
         if (!hasPermission(Manifest.permission.ACCESS_FINE_LOCATION)) {
             requestPermission(Manifest.permission.ACCESS_FINE_LOCATION, R.string.perm_fine_location_detail);
         }
+        if (!hasPermission(Manifest.permission.FOREGROUND_SERVICE)) {
+            requestPermission(Manifest.permission.FOREGROUND_SERVICE, R.string.perm_foreground_service_detail);
+        }
     }
 
     @Override

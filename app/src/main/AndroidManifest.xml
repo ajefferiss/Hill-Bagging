@@ -3,6 +3,7 @@
     package="uk.co.openmoments.hillbagging">
 
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
     <application
         android:allowBackup="true"
@@ -38,5 +39,9 @@
                 android:value=".MainActivity" />
         </activity>
 
+        <service android:name=".service.TrackerService"
+            android:enabled="true"
+            android:exported="true">
+        </service>
     </application>
 </manifest>
