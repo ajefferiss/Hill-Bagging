@@ -1,28 +1,38 @@
 package uk.co.openmoments.hillbagging.ui.tracking;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.Criteria;
+import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 import uk.co.openmoments.hillbagging.R;
 import uk.co.openmoments.hillbagging.service.TrackerService;
@@ -59,28 +69,44 @@ public class LiveTrackingFragment extends Fragment implements ActivityCompat.OnR
 
         rootView = inflater.inflate(R.layout.fragment_live_tracking, container, false);
 
+        LinearLayout buttonBar = (LinearLayout)rootView.findViewById(R.id.live_tracking_inprogress_buttons);
+        ConstraintLayout.LayoutParams layoutParams = new ConstraintLayout.LayoutParams(
+                ConstraintLayout.LayoutParams.WRAP_CONTENT, ConstraintLayout.LayoutParams.WRAP_CONTENT
+        );
+        layoutParams.setMargins(10, 0, 0, getNavigationBarHeight() + 5);
+        buttonBar.setLayoutParams(layoutParams);
 
-        mapView = (MapView)rootView.findViewById(R.id.live_track_map_view);
+        mapView = rootView.findViewById(R.id.live_track_map_view);
         mapView.onCreate(savedInstanceState);
         mapView.onResume();
-
-        try {
-            MapsInitializer.initialize(getActivity().getApplicationContext());
-        } catch (Exception e) {
-            Log.e(LiveTrackingFragment.class.toString(), "Failed to init map", e);
-        }
-
         mapView.getMapAsync(this);
 
-        ImageButton button = (ImageButton)rootView.findViewById(R.id.live_track_start);
+        ImageButton button = rootView.findViewById(R.id.live_track_start);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 startTrackerService();
             }
         });
+        button = rootView.findViewById(R.id.live_track_stop);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                stopTrackerService();
+            }
+        });
 
         return rootView;
+    }
+
+    public int getNavigationBarHeight() {
+        boolean hasMenuKey = ViewConfiguration.get(getContext()).hasPermanentMenuKey();
+        int resourceId = getResources().getIdentifier("mobile_navigation", "dimen", "android");
+        if (resourceId > 0 && !hasMenuKey)
+        {
+            return getResources().getDimensionPixelSize(resourceId);
+        }
+        return 0;
     }
 
     @Override
@@ -136,7 +162,20 @@ public class LiveTrackingFragment extends Fragment implements ActivityCompat.OnR
     @Override
     public void onMapReady(GoogleMap map) {
         googleMap = map;
+        googleMap.getUiSettings().setMyLocationButtonEnabled(true);
+        googleMap.getUiSettings().setZoomControlsEnabled(true);
+        googleMap.getUiSettings().setCompassEnabled(true);
         googleMap.setMyLocationEnabled(true);
+        googleMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
+
+        LocationManager locationManager = (LocationManager)getActivity().getSystemService(LOCATION_SERVICE);
+        @SuppressLint("MissingPermission") Location location = locationManager.getLastKnownLocation(String.valueOf(locationManager.getBestProvider(new Criteria(), true)));
+        if (location != null) {
+            final double currentLatitude = location.getLatitude();
+            final double currentLongitude = location.getLongitude();
+            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(currentLatitude, currentLongitude), 15));
+            googleMap.animateCamera(CameraUpdateFactory.zoomTo(10), 2000, null);
+        }
     }
 
     private boolean hasPermission(String permission) {
@@ -155,6 +194,12 @@ public class LiveTrackingFragment extends Fragment implements ActivityCompat.OnR
     }
 
     private void startTrackerService() {
+        Toast.makeText(getContext(), R.string.live_tracking_start_description, Toast.LENGTH_SHORT).show();
         getActivity().startService(new Intent(getActivity(), TrackerService.class));
+    }
+
+    private void stopTrackerService() {
+        Toast.makeText(getContext(), R.string.live_tracking_stop_description, Toast.LENGTH_SHORT).show();
+        getActivity().stopService(new Intent(getActivity(), TrackerService.class));
     }
 }
