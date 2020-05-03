@@ -43,6 +43,9 @@ public class MainActivity extends AppCompatActivity {
         if (!hasPermission(Manifest.permission.FOREGROUND_SERVICE)) {
             requestPermission(Manifest.permission.FOREGROUND_SERVICE, R.string.perm_foreground_service_detail);
         }
+        if (!hasPermission(Manifest.permission.INTERNET)) {
+            requestPermission(Manifest.permission.INTERNET, R.string.perm_foreground_service_detail);
+        }
     }
 
     @Override
