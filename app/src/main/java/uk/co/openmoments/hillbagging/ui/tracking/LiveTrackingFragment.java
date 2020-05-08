@@ -165,10 +165,7 @@ public class LiveTrackingFragment extends Fragment implements ActivityCompat.OnR
         LocationManager locationManager = (LocationManager)getActivity().getSystemService(LOCATION_SERVICE);
         @SuppressLint("MissingPermission") Location location = locationManager.getLastKnownLocation(String.valueOf(locationManager.getBestProvider(new Criteria(), true)));
         if (location != null) {
-            final double currentLatitude = location.getLatitude();
-            final double currentLongitude = location.getLongitude();
-            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(currentLatitude, currentLongitude), 15));
-            googleMap.animateCamera(CameraUpdateFactory.zoomTo(10), 2000, null);
+            googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), 15.0f));
         }
     }
 
