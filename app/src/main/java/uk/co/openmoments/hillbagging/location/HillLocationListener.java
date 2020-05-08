@@ -5,19 +5,24 @@ import android.location.LocationListener;
 import android.os.Bundle;
 import android.util.Log;
 
+import uk.co.openmoments.hillbagging.interfaces.LocationChangedListener;
+
 public class HillLocationListener implements LocationListener {
     private static final String TAG = HillLocationListener.class.getSimpleName();
     private Location lastLocation;
+    private LocationChangedListener callback;
 
-    public HillLocationListener(String provider) {
+    public HillLocationListener(String provider, LocationChangedListener callback) {
         Log.d(TAG, "LocationListener: " + provider);
         lastLocation = new Location(provider);
+        this.callback = callback;
     }
 
     @Override
     public void onLocationChanged(Location location) {
         Log.d(TAG, "onLocationChange: " + location);
         lastLocation.set(location);
+        callback.onLocationChanged(lastLocation);
     }
 
     @Override

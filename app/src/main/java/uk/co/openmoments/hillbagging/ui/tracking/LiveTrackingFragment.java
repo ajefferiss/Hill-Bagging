@@ -2,8 +2,12 @@ package uk.co.openmoments.hillbagging.ui.tracking;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
@@ -22,12 +26,17 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
+
+import java.util.ArrayList;
 
 import uk.co.openmoments.hillbagging.R;
 import uk.co.openmoments.hillbagging.service.TrackerService;
@@ -38,6 +47,8 @@ public class LiveTrackingFragment extends Fragment implements ActivityCompat.OnR
     private static final int PERMISSION_REQUEST = 1;
     private MapView mapView = null;
     private GoogleMap googleMap;
+    private Polyline polyline;
+    private ArrayList<LatLng> points;
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView;
@@ -56,6 +67,8 @@ public class LiveTrackingFragment extends Fragment implements ActivityCompat.OnR
 
             return rootView;
         }
+
+        points = new ArrayList<LatLng>();
 
         LocationManager locationManager = (LocationManager)getActivity().getSystemService(LOCATION_SERVICE);
         if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
@@ -85,14 +98,15 @@ public class LiveTrackingFragment extends Fragment implements ActivityCompat.OnR
             }
         });
 
+        registerReceiver();
+
         return rootView;
     }
 
     public int getNavigationBarHeight() {
         boolean hasMenuKey = ViewConfiguration.get(getContext()).hasPermanentMenuKey();
         int resourceId = getResources().getIdentifier("design_bottom_navigation_height", "dimen", getActivity().getPackageName());
-        if (resourceId > 0 && !hasMenuKey)
-        {
+        if (resourceId > 0 && !hasMenuKey) {
             return getResources().getDimensionPixelSize(resourceId);
         }
         return 0;
@@ -102,6 +116,7 @@ public class LiveTrackingFragment extends Fragment implements ActivityCompat.OnR
     public void onResume() {
         super.onResume();
 
+        registerReceiver();
         if (mapView != null) {
             mapView.onResume();
         }
@@ -111,6 +126,7 @@ public class LiveTrackingFragment extends Fragment implements ActivityCompat.OnR
     public void onPause() {
         super.onPause();
 
+        unregisterReceiver();
         if (mapView != null) {
             mapView.onPause();
         }
@@ -120,6 +136,7 @@ public class LiveTrackingFragment extends Fragment implements ActivityCompat.OnR
     public void onDestroy() {
         super.onDestroy();
 
+        unregisterReceiver();
         if (mapView != null) {
             mapView.onDestroy();
         }
@@ -160,7 +177,9 @@ public class LiveTrackingFragment extends Fragment implements ActivityCompat.OnR
         LocationManager locationManager = (LocationManager)getActivity().getSystemService(LOCATION_SERVICE);
         @SuppressLint("MissingPermission") Location location = locationManager.getLastKnownLocation(String.valueOf(locationManager.getBestProvider(new Criteria(), true)));
         if (location != null) {
-            googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), 15.0f));
+            LatLng position = new LatLng(location.getLatitude(), location.getLongitude());
+            googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(position, 15.0f));
+            points.clear();
         }
     }
 
@@ -180,6 +199,7 @@ public class LiveTrackingFragment extends Fragment implements ActivityCompat.OnR
     }
 
     private void startTrackerService() {
+        points.clear();
         Toast.makeText(getContext(), R.string.live_tracking_start_description, Toast.LENGTH_SHORT).show();
         getActivity().startService(new Intent(getActivity(), TrackerService.class));
     }
@@ -187,5 +207,35 @@ public class LiveTrackingFragment extends Fragment implements ActivityCompat.OnR
     private void stopTrackerService() {
         Toast.makeText(getContext(), R.string.live_tracking_stop_description, Toast.LENGTH_SHORT).show();
         getActivity().stopService(new Intent(getActivity(), TrackerService.class));
+    }
+
+    private void registerReceiver() {
+        LocalBroadcastManager.getInstance(getContext()).registerReceiver(locationMessageReceiver, new IntentFilter(TrackerService.LOCATION_UPDATES_RECEIVER));
+    }
+
+    private void unregisterReceiver() {
+        LocalBroadcastManager.getInstance(getContext()).unregisterReceiver(locationMessageReceiver);
+    }
+
+    private BroadcastReceiver locationMessageReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Bundle bundle = intent.getBundleExtra("Location");
+            Location lastKnownLocation = (Location)bundle.getParcelable("Location");
+            if (lastKnownLocation != null) {
+                points.add(new LatLng(lastKnownLocation.getLatitude(), lastKnownLocation.getLongitude()));
+                redrawLine();
+            }
+        }
+    };
+
+    private void redrawLine() {
+        googleMap.clear();
+
+        PolylineOptions options = new PolylineOptions().width(5).color(Color.BLUE).geodesic(true);
+        points.stream().forEach(point -> {
+            options.add(point);
+        });
+        polyline = googleMap.addPolyline(options);
     }
 }

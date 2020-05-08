@@ -13,21 +13,28 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.preference.PreferenceManager;
 
 import java.util.Arrays;
 
 import uk.co.openmoments.hillbagging.R;
+import uk.co.openmoments.hillbagging.interfaces.LocationChangedListener;
 import uk.co.openmoments.hillbagging.location.HillLocationListener;
 
-public class TrackerService extends Service {
+public class TrackerService extends Service implements LocationChangedListener {
+
+    public static final String LOCATION_UPDATES_RECEIVER = "GPSLocationUpdates";
 
     private static final String TAG = TrackerService.class.getSimpleName();
     private LocationManager locationManager = null;
@@ -36,9 +43,10 @@ public class TrackerService extends Service {
     private static final float LOCATION_DISTANCE = 10f;
     private static String NOTIFICATION_CHANNEL_ID = "uk.co.openmoments.hillbagging";
     private static String NOTIFICATION_CHANNEL_NAME = "Live Tracker Service";
+
     private LocationListener[] locationListeners = new LocationListener[] {
-        new HillLocationListener(LocationManager.GPS_PROVIDER),
-        new HillLocationListener(LocationManager.NETWORK_PROVIDER)
+        new HillLocationListener(LocationManager.GPS_PROVIDER, TrackerService.this),
+        new HillLocationListener(LocationManager.NETWORK_PROVIDER, TrackerService.this)
     };
 
     @Override
@@ -73,6 +81,15 @@ public class TrackerService extends Service {
                 Log.e(TAG, "Failed to remove location listener, ignoring: ", ex);
             }
         });
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+        Intent intent = new Intent(LOCATION_UPDATES_RECEIVER);
+        Bundle bundle = new Bundle();
+        bundle.putParcelable("Location", location);
+        intent.putExtra("Location", bundle);
+        LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);
     }
 
     private void requestLocationUpdates() {
