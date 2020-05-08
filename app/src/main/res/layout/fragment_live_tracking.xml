@@ -2,29 +2,29 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:contentDescription="Test">
+    android:layout_height="match_parent">
 
     <com.google.android.gms.maps.MapView
         android:id="@+id/live_track_map_view"
         android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="5dp"
-        app:layout_constraintTop_toTopOf="parent"
+        android:apiKey="@string/google_maps_key"
+        android:clickable="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        android:clickable="true"
-        android:apiKey="@string/google_maps_key" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <LinearLayout
         android:id="@+id/live_tracking_inprogress_buttons"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
         android:background="@drawable/layout_rounded"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:orientation="horizontal"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toLeftOf="parent">
 
         <ImageButton
@@ -32,8 +32,8 @@
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:layout_margin="1dp"
-            android:contentDescription="@string/live_tracking_start_description"
             android:background="@null"
+            android:contentDescription="@string/live_tracking_start_description"
             android:src="@drawable/ic_record_button_black_24dp" />
 
         <View
@@ -46,8 +46,8 @@
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:layout_margin="1dp"
-            android:contentDescription="@string/live_tracking_stop_description"
             android:background="@null"
+            android:contentDescription="@string/live_tracking_stop_description"
             android:src="@drawable/ic_stop_black_24dp" />
 
         <View
@@ -60,8 +60,8 @@
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:layout_margin="1dp"
-            android:contentDescription="@string/live_tracking_pause_description"
             android:background="@null"
+            android:contentDescription="@string/live_tracking_pause_description"
             android:src="@drawable/ic_pause_black_24dp" />
     </LinearLayout>
 

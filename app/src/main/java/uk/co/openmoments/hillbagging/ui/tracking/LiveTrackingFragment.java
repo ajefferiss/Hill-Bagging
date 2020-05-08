@@ -69,17 +69,11 @@ public class LiveTrackingFragment extends Fragment implements ActivityCompat.OnR
 
         rootView = inflater.inflate(R.layout.fragment_live_tracking, container, false);
 
-        LinearLayout buttonBar = (LinearLayout)rootView.findViewById(R.id.live_tracking_inprogress_buttons);
-        ConstraintLayout.LayoutParams layoutParams = new ConstraintLayout.LayoutParams(
-                ConstraintLayout.LayoutParams.WRAP_CONTENT, ConstraintLayout.LayoutParams.WRAP_CONTENT
-        );
-        layoutParams.setMargins(10, 0, 0, getNavigationBarHeight() + 5);
-        buttonBar.setLayoutParams(layoutParams);
-
         mapView = rootView.findViewById(R.id.live_track_map_view);
         mapView.onCreate(savedInstanceState);
         mapView.onResume();
         mapView.getMapAsync(this);
+        mapView.setPadding(0, 0, 0, getNavigationBarHeight());
 
         ImageButton button = rootView.findViewById(R.id.live_track_start);
         button.setOnClickListener(new View.OnClickListener() {
@@ -101,7 +95,7 @@ public class LiveTrackingFragment extends Fragment implements ActivityCompat.OnR
 
     public int getNavigationBarHeight() {
         boolean hasMenuKey = ViewConfiguration.get(getContext()).hasPermanentMenuKey();
-        int resourceId = getResources().getIdentifier("mobile_navigation", "dimen", "android");
+        int resourceId = getResources().getIdentifier("design_bottom_navigation_height", "dimen", getActivity().getPackageName());
         if (resourceId > 0 && !hasMenuKey)
         {
             return getResources().getDimensionPixelSize(resourceId);
