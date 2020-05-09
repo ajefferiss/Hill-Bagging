@@ -18,5 +18,13 @@
             android:inputType="number"
             android:digits="0123456789"
             android:defaultValue="10" />
+
+        <DropDownPreference
+            android:defaultValue="@string/settings_map_type_default_option"
+            android:entries="@array/settings_map_types"
+            android:entryValues="@array/setting_map_values"
+            android:key="track_map_type"
+            app:useSimpleSummaryProvider="true"
+            android:title="@string/track_map_type_title" />
     </PreferenceCategory>
 </PreferenceScreen>

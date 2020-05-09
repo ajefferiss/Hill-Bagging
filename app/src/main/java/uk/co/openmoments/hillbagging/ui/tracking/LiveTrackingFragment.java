@@ -6,6 +6,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Criteria;
@@ -27,6 +28,7 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+import androidx.preference.PreferenceManager;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -46,7 +48,7 @@ import static android.content.Context.LOCATION_SERVICE;
 public class LiveTrackingFragment extends Fragment implements ActivityCompat.OnRequestPermissionsResultCallback, OnMapReadyCallback {
     private static final int PERMISSION_REQUEST = 1;
     private MapView mapView = null;
-    private GoogleMap googleMap;
+    private GoogleMap googleMap = null;
     private Polyline polyline;
     private ArrayList<LatLng> points;
 
@@ -120,6 +122,11 @@ public class LiveTrackingFragment extends Fragment implements ActivityCompat.OnR
         if (mapView != null) {
             mapView.onResume();
         }
+
+        if (googleMap != null) {
+            // Update the map type in case we've changed the settings.
+            googleMap.setMapType(getMapType());
+        }
     }
 
     @Override
@@ -172,7 +179,7 @@ public class LiveTrackingFragment extends Fragment implements ActivityCompat.OnR
         googleMap.getUiSettings().setZoomControlsEnabled(true);
         googleMap.getUiSettings().setCompassEnabled(true);
         googleMap.setMyLocationEnabled(true);
-        googleMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
+        googleMap.setMapType(getMapType());
 
         LocationManager locationManager = (LocationManager)getActivity().getSystemService(LOCATION_SERVICE);
         @SuppressLint("MissingPermission") Location location = locationManager.getLastKnownLocation(String.valueOf(locationManager.getBestProvider(new Criteria(), true)));
@@ -181,6 +188,11 @@ public class LiveTrackingFragment extends Fragment implements ActivityCompat.OnR
             googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(position, 15.0f));
             points.clear();
         }
+    }
+
+    private int getMapType() {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+        return Integer.valueOf(sharedPreferences.getString("track_map_type", ""+ GoogleMap.MAP_TYPE_NORMAL));
     }
 
     private boolean hasPermission(String permission) {

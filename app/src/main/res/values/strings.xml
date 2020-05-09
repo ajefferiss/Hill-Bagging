@@ -22,6 +22,20 @@
 
     <!-- Preference Titles -->
     <string name="tracking_header">Live Tracking</string>
+    <string name="settings_map_type_default_option">Normal</string>
+    <string name="track_map_type_title">Type of Map</string>
+    <string-array name="settings_map_types">
+        <item>Hybrid</item>
+        <item>Normal</item>
+        <item>Satellite</item>
+        <item>Terrain</item>
+    </string-array>
+    <string-array name="setting_map_values">
+        <item>4</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+    </string-array>
 
     <!-- Live Tracking -->
     <string name="track_plot_period">Plot period</string>
@@ -31,6 +45,7 @@
     <string name="live_tracking_stop_description">Stop Live Tracking</string>
     <string name="live_tracking_start_description">Start Live Tracking</string>
     <string name="live_tracking_pause_description">Pause Live Tracking</string>
+
 
     <!-- Permission explanations -->
     <string name="perm_required_title">Permission Required</string>
