@@ -249,13 +249,17 @@ public class LiveTrackingFragment extends Fragment implements ActivityCompat.OnR
                         @SuppressLint("SimpleDateFormat") SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
                         Date date = new Date();
 
-                        HillsWalked hillWalked = new HillsWalked();
-                        hillWalked.setHillId(hill.hill.getHillId());
-                        hillWalked.setWalkedDate(java.sql.Date.valueOf(dateFormat.format(date)));
-                        database.hillWalkedDAO().insertAll(hillWalked);
+                        int hillId = hill.hill.getHillId();
+                        if (database.hillWalkedDAO().getHillById(hillId).isEmpty()) {
+                            HillsWalked hillWalked = new HillsWalked();
+                            hillWalked.setHillId(hillId);
+                            hillWalked.setWalkedDate(java.sql.Date.valueOf(dateFormat.format(date)));
+                            database.hillWalkedDAO().insertAll(hillWalked);
 
-                        String baggedHill = getResources().getString(R.string.live_tracking_bagged_hill, hill.hill.getName());
-                        Toast.makeText(getContext(), baggedHill, Toast.LENGTH_LONG).show();
+                            String baggedHill = getResources().getString(R.string.live_tracking_bagged_hill, hill.hill.getName());
+                            Toast.makeText(getContext(), baggedHill, Toast.LENGTH_LONG).show();
+                        }
+
                     }
                 });
             }
