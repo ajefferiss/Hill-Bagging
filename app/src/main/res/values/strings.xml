@@ -2,7 +2,8 @@
     <string name="app_name">Hill Tracker</string>
     <string name="title_home">Home</string>
     <string name="title_search">Search</string>
-    <string name="title_notifications">Notifications</string>
+    <string name="title_live_tracking">Live Tracking</string>
+    <string name="title_settings">Settings</string>
     <plurals name="numberOfHillsWalked">
         <item quantity="one">You have walked %1$2d hill (%2$.2f%%). The hill you have walked is shown below.</item>
         <item quantity="other">You have walked %1$2d hills (%2$.2f%%). The hills you have walked are shown below.</item>
@@ -18,4 +19,42 @@
     <string name="hill_dialog_mark_walked">Mark Walked</string>
     <string name="no_hill_search_results">No hills match your search</string>
     <string name="hill_search_hint">Find hill by name</string>
+
+    <!-- Preference Titles -->
+    <string name="tracking_header">Live Tracking</string>
+    <string name="settings_map_type_default_option">Normal</string>
+    <string name="track_map_type_title">Type of Map</string>
+    <string-array name="settings_map_types">
+        <item>Hybrid</item>
+        <item>Normal</item>
+        <item>Satellite</item>
+        <item>Terrain</item>
+    </string-array>
+    <string-array name="setting_map_values">
+        <item>4</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+    </string-array>
+
+    <!-- Live Tracking -->
+    <string name="track_plot_period">Plot period</string>
+    <string name="track_plot_period_summary">Plot your position once ever %1$ss</string>
+    <string name="track_bag_distance">Automatic claim distance</string>
+    <string name="track_bag_distance_summary">Automatically bag hills within %1$sm</string>
+    <string name="live_tracking_stop_description">Stop Live Tracking</string>
+    <string name="live_tracking_start_description">Start Live Tracking</string>
+    <string name="live_tracking_pause_description">Pause Live Tracking</string>
+    <string name="live_tracking_enable_location_services">Please enable location services</string>
+    <string name="live_tracking_bagged_hill">Automatically bagged %1$s!</string>
+
+
+    <!-- Permission explanations -->
+    <string name="perm_required_title">Permission Required</string>
+    <string name="perm_fine_location_detail">Access is required to your devices fine location so that it can gain GPS coordinates while tracking a live walk. Without this permission live tracking is not possible.</string>
+    <string name="perm_foreground_service_detail">Access is required to create a foreground service so that Live Tracking can update your current location</string>
+    <string name="perm_btn_request">Request Permissions</string>
+
+    <!-- Notifications -->
+    <string name="notification_text">Tracking your walking and bagging hills as you go!</string>
 </resources>

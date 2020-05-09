@@ -1,0 +1,30 @@
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory app:title="@string/tracking_header">
+        <EditTextPreference
+            app:key="track_plot_period"
+            app:title="@string/track_plot_period"
+            android:defaultValue="30"
+            android:inputType="numberDecimal"
+            android:digits="0123456789"
+            android:key="track_plot_period"
+            android:summary="@string/track_plot_period_summary"
+            android:title="@string/track_plot_period" />
+
+        <EditTextPreference
+            app:key="track_bag_distance"
+            app:title="@string/track_bag_distance"
+            android:inputType="number"
+            android:digits="0123456789"
+            android:defaultValue="10" />
+
+        <DropDownPreference
+            android:defaultValue="@string/settings_map_type_default_option"
+            android:entries="@array/settings_map_types"
+            android:entryValues="@array/setting_map_values"
+            android:key="track_map_type"
+            app:useSimpleSummaryProvider="true"
+            android:title="@string/track_map_type_title" />
+    </PreferenceCategory>
+</PreferenceScreen>

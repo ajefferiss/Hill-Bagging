@@ -18,8 +18,8 @@
         tools:layout="@layout/fragment_search" />
 
     <fragment
-        android:id="@+id/navigation_notifications"
-        android:name="uk.co.openmoments.hillbagging.ui.notifications.NotificationsFragment"
-        android:label="@string/title_notifications"
-        tools:layout="@layout/fragment_notifications" />
+        android:id="@+id/navigation_live_track"
+        android:name="uk.co.openmoments.hillbagging.ui.tracking.LiveTrackingFragment"
+        android:label="@string/title_live_tracking"
+        tools:layout="@layout/fragment_live_tracking" />
 </navigation>
