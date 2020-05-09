@@ -35,7 +35,6 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 
 import java.util.ArrayList;
@@ -47,9 +46,9 @@ import static android.content.Context.LOCATION_SERVICE;
 
 public class LiveTrackingFragment extends Fragment implements ActivityCompat.OnRequestPermissionsResultCallback, OnMapReadyCallback {
     private static final int PERMISSION_REQUEST = 1;
+    private static final String TAG = LiveTrackingFragment.class.toString();
     private MapView mapView = null;
     private GoogleMap googleMap = null;
-    private Polyline polyline;
     private ArrayList<LatLng> points;
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -58,22 +57,19 @@ public class LiveTrackingFragment extends Fragment implements ActivityCompat.OnR
         if (!hasPermission(Manifest.permission.ACCESS_FINE_LOCATION) || !hasPermission(Manifest.permission.FOREGROUND_SERVICE)) {
             rootView = inflater.inflate(R.layout.live_tracking_permission_denied, container, false);
 
-            Button button = (Button)rootView.findViewById(R.id.live_track_perm_request_btn);
-            button.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    requestPermission(Manifest.permission.ACCESS_FINE_LOCATION, R.string.perm_fine_location_detail);
-                    requestPermission(Manifest.permission.FOREGROUND_SERVICE, R.string.perm_foreground_service_detail);
-                }
+            Button button = rootView.findViewById(R.id.live_track_perm_request_btn);
+            button.setOnClickListener(v -> {
+                requestPermission(Manifest.permission.ACCESS_FINE_LOCATION);
+                requestPermission(Manifest.permission.FOREGROUND_SERVICE);
             });
 
             return rootView;
         }
 
-        points = new ArrayList<LatLng>();
+        points = new ArrayList<>();
 
-        LocationManager locationManager = (LocationManager)getActivity().getSystemService(LOCATION_SERVICE);
-        if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+        LocationManager locationManager = (LocationManager) requireActivity().getSystemService(LOCATION_SERVICE);
+        if (locationManager == null || !locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
             Toast.makeText(getContext(), "Please enable location services", Toast.LENGTH_SHORT).show();
         }
 
@@ -86,28 +82,19 @@ public class LiveTrackingFragment extends Fragment implements ActivityCompat.OnR
         mapView.setPadding(0, 0, 0, getNavigationBarHeight());
 
         ImageButton button = rootView.findViewById(R.id.live_track_start);
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startTrackerService();
-            }
-        });
+        button.setOnClickListener(v -> startTrackerService());
+
         button = rootView.findViewById(R.id.live_track_stop);
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                stopTrackerService();
-            }
-        });
+        button.setOnClickListener(v -> stopTrackerService());
 
         registerReceiver();
 
         return rootView;
     }
 
-    public int getNavigationBarHeight() {
+    private int getNavigationBarHeight() {
         boolean hasMenuKey = ViewConfiguration.get(getContext()).hasPermanentMenuKey();
-        int resourceId = getResources().getIdentifier("design_bottom_navigation_height", "dimen", getActivity().getPackageName());
+        int resourceId = getResources().getIdentifier("design_bottom_navigation_height", "dimen", requireActivity().getPackageName());
         if (resourceId > 0 && !hasMenuKey) {
             return getResources().getDimensionPixelSize(resourceId);
         }
@@ -160,14 +147,10 @@ public class LiveTrackingFragment extends Fragment implements ActivityCompat.OnR
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        switch (requestCode) {
-            case PERMISSION_REQUEST: {
-                // If request is cancelled, the result arrays are empty.
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    FragmentTransaction fragmentTransaction = getParentFragmentManager().beginTransaction();
-                    fragmentTransaction.detach(this).attach(this).commit();
-                }
-                return;
+        if (requestCode == PERMISSION_REQUEST) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                FragmentTransaction fragmentTransaction = getParentFragmentManager().beginTransaction();
+                fragmentTransaction.detach(this).attach(this).commit();
             }
         }
     }
@@ -181,30 +164,32 @@ public class LiveTrackingFragment extends Fragment implements ActivityCompat.OnR
         googleMap.setMyLocationEnabled(true);
         googleMap.setMapType(getMapType());
 
-        LocationManager locationManager = (LocationManager)getActivity().getSystemService(LOCATION_SERVICE);
-        @SuppressLint("MissingPermission") Location location = locationManager.getLastKnownLocation(String.valueOf(locationManager.getBestProvider(new Criteria(), true)));
-        if (location != null) {
-            LatLng position = new LatLng(location.getLatitude(), location.getLongitude());
-            googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(position, 15.0f));
-            points.clear();
+        LocationManager locationManager = (LocationManager) requireActivity().getSystemService(LOCATION_SERVICE);
+        if (locationManager != null) {
+            @SuppressLint("MissingPermission") Location location = locationManager.getLastKnownLocation(String.valueOf(locationManager.getBestProvider(new Criteria(), true)));
+            if (location != null) {
+                LatLng position = new LatLng(location.getLatitude(), location.getLongitude());
+                googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(position, 15.0f));
+                points.clear();
+            }
         }
     }
 
     private int getMapType() {
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
-        return Integer.valueOf(sharedPreferences.getString("track_map_type", ""+ GoogleMap.MAP_TYPE_NORMAL));
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(requireContext());
+        return Integer.parseInt(sharedPreferences.getString("track_map_type", ""+ GoogleMap.MAP_TYPE_NORMAL));
     }
 
     private boolean hasPermission(String permission) {
         try {
-            return ContextCompat.checkSelfPermission(getContext(), permission) == PackageManager.PERMISSION_GRANTED;
+            return ContextCompat.checkSelfPermission(requireContext(), permission) == PackageManager.PERMISSION_GRANTED;
         } catch (IllegalArgumentException iae) {
-            Log.e(LiveTrackingFragment.class.toString(), "Failed to check permission: " + permission, iae);
+            Log.e(TAG, "Failed to check permission: " + permission, iae);
             return false;
         }
     }
 
-    private void requestPermission(String permission, int permissionDetail) {
+    private void requestPermission(String permission) {
         if (!hasPermission(permission)) {
             requestPermissions(new String[]{permission}, PERMISSION_REQUEST);
         }
@@ -213,27 +198,35 @@ public class LiveTrackingFragment extends Fragment implements ActivityCompat.OnR
     private void startTrackerService() {
         points.clear();
         Toast.makeText(getContext(), R.string.live_tracking_start_description, Toast.LENGTH_SHORT).show();
-        getActivity().startService(new Intent(getActivity(), TrackerService.class));
+        requireActivity().startService(new Intent(getActivity(), TrackerService.class));
     }
 
     private void stopTrackerService() {
         Toast.makeText(getContext(), R.string.live_tracking_stop_description, Toast.LENGTH_SHORT).show();
-        getActivity().stopService(new Intent(getActivity(), TrackerService.class));
+        requireActivity().stopService(new Intent(getActivity(), TrackerService.class));
     }
 
     private void registerReceiver() {
-        LocalBroadcastManager.getInstance(getContext()).registerReceiver(locationMessageReceiver, new IntentFilter(TrackerService.LOCATION_UPDATES_RECEIVER));
+        LocalBroadcastManager.getInstance(requireContext()).registerReceiver(
+                locationMessageReceiver,
+                new IntentFilter(TrackerService.LOCATION_UPDATES_RECEIVER)
+        );
     }
 
     private void unregisterReceiver() {
-        LocalBroadcastManager.getInstance(getContext()).unregisterReceiver(locationMessageReceiver);
+        LocalBroadcastManager.getInstance(requireContext()).unregisterReceiver(locationMessageReceiver);
     }
 
     private BroadcastReceiver locationMessageReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             Bundle bundle = intent.getBundleExtra("Location");
-            Location lastKnownLocation = (Location)bundle.getParcelable("Location");
+            if (bundle == null) {
+                Log.d(TAG, "Unable to extract Location bundle from intent");
+                return;
+            }
+
+            Location lastKnownLocation = bundle.getParcelable("Location");
             if (lastKnownLocation != null) {
                 points.add(new LatLng(lastKnownLocation.getLatitude(), lastKnownLocation.getLongitude()));
                 redrawLine();
@@ -245,9 +238,7 @@ public class LiveTrackingFragment extends Fragment implements ActivityCompat.OnR
         googleMap.clear();
 
         PolylineOptions options = new PolylineOptions().width(5).color(Color.BLUE).geodesic(true);
-        points.stream().forEach(point -> {
-            options.add(point);
-        });
-        polyline = googleMap.addPolyline(options);
+        points.forEach(options::add);
+        googleMap.addPolyline(options);
     }
 }

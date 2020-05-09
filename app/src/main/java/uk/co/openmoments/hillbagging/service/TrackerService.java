@@ -4,12 +4,9 @@ import android.Manifest;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.app.Service;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
@@ -19,7 +16,6 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
-import android.widget.Toast;
 
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
@@ -39,7 +35,6 @@ public class TrackerService extends Service implements LocationChangedListener {
     private static final String TAG = TrackerService.class.getSimpleName();
     private LocationManager locationManager = null;
     private int locationInterval;
-    private int fastestLocationInterval;
     private static final float LOCATION_DISTANCE = 10f;
     private static String NOTIFICATION_CHANNEL_ID = "uk.co.openmoments.hillbagging";
     private static String NOTIFICATION_CHANNEL_NAME = "Live Tracker Service";
@@ -59,8 +54,8 @@ public class TrackerService extends Service implements LocationChangedListener {
         super.onCreate();
 
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        locationInterval = 1000 * sharedPreferences.getInt("track_plot_period", 30);
-        fastestLocationInterval = Math.min(5000, locationInterval);
+        Log.d(getClass().getSimpleName(), "track_plot_period: " + sharedPreferences.getString("track_plot_period", "A"));
+        locationInterval = 1000 * Integer.parseInt(sharedPreferences.getString("track_plot_period", "30"));
 
         if (locationManager == null) {
             locationManager = (LocationManager) getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
