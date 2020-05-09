@@ -242,7 +242,7 @@ public class LiveTrackingFragment extends Fragment implements ActivityCompat.OnR
                 redrawLine();
 
                 SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(requireContext());
-                int bagDistance = Integer.parseInt(sharedPreferences.getString("auto_bag_distance", "10"));
+                int bagDistance = Integer.parseInt(sharedPreferences.getString("track_bag_distance", "10"));
 
                 hills.forEach(hill -> {
                     if (hill.hill.calculateDistanceFrom(lastKnownLocation) <= bagDistance) {
