@@ -45,6 +45,8 @@
     <string name="live_tracking_stop_description">Stop Live Tracking</string>
     <string name="live_tracking_start_description">Start Live Tracking</string>
     <string name="live_tracking_pause_description">Pause Live Tracking</string>
+    <string name="live_tracking_enable_location_services">Please enable location services</string>
+    <string name="live_tracking_bagged_hill">Automatically bagged %1$s!</string>
 
 
     <!-- Permission explanations -->

@@ -80,7 +80,7 @@ public class LiveTrackingFragment extends Fragment implements ActivityCompat.OnR
 
         LocationManager locationManager = (LocationManager) requireActivity().getSystemService(LOCATION_SERVICE);
         if (locationManager == null || !locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-            Toast.makeText(getContext(), "Please enable location services", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), R.string.live_tracking_enable_location_services, Toast.LENGTH_SHORT).show();
         }
 
         rootView = inflater.inflate(R.layout.fragment_live_tracking, container, false);
@@ -254,7 +254,8 @@ public class LiveTrackingFragment extends Fragment implements ActivityCompat.OnR
                         hillWalked.setWalkedDate(java.sql.Date.valueOf(dateFormat.format(date)));
                         database.hillWalkedDAO().insertAll(hillWalked);
 
-                        Toast.makeText(getContext(), "Bagged " + hill.hill.getName() + "on " + dateFormat.format(date), Toast.LENGTH_LONG).show();
+                        String baggedHill = getResources().getString(R.string.live_tracking_bagged_hill, hill.hill.getName());
+                        Toast.makeText(getContext(), baggedHill, Toast.LENGTH_LONG).show();
                     }
                 });
             }
