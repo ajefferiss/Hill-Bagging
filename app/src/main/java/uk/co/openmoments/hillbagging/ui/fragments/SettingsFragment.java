@@ -55,8 +55,8 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
     }
 
     private void setupSummaries() {
-        ArrayList<String> tracking_prefs = new ArrayList<>(Arrays.asList("track_plot_period","track_bag_distance"));
-        tracking_prefs.forEach(preference -> {
+        ArrayList<String> preferences = new ArrayList<>(Arrays.asList("track_plot_period","track_bag_distance", "nearby_distance"));
+        preferences.forEach(preference -> {
             String summaryText;
             EditTextPreference editTextPreference = getPreferenceManager().findPreference(preference);
             if (editTextPreference == null) {

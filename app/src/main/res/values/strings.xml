@@ -3,6 +3,7 @@
     <string name="title_home">Home</string>
     <string name="title_search">Search</string>
     <string name="title_live_tracking">Live Tracking</string>
+    <string name="title_nearby">Nearby</string>
     <string name="title_settings">Settings</string>
     <plurals name="numberOfHillsWalked">
         <item quantity="one">You have walked %1$2d hill (%2$.2f%%). The hill you have walked is shown below.</item>
@@ -48,6 +49,10 @@
     <string name="live_tracking_enable_location_services">Please enable location services</string>
     <string name="live_tracking_bagged_hill">Automatically bagged %1$s!</string>
 
+    <!-- Nearby Hills -->
+    <string name="nearby_header">Nearby Hills</string>
+    <string name="nearby_distance_title">Distance to hill</string>
+    <string name="nearby_distance_summary">Show hills within %1$skm</string>
 
     <!-- Permission explanations -->
     <string name="perm_required_title">Permission Required</string>
@@ -57,4 +62,7 @@
 
     <!-- Notifications -->
     <string name="notification_text">Tracking your walking and bagging hills as you go!</string>
+
+    <!-- Hills Nearby -->
+    <string name="no_hills_nearby">There are no hills nearby to show</string>
 </resources>
