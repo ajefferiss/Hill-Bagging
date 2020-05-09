@@ -3,9 +3,7 @@ package uk.co.openmoments.hillbagging.ui.fragments;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.InputType;
-import android.widget.EditText;
 
-import androidx.annotation.NonNull;
 import androidx.preference.EditTextPreference;
 import androidx.preference.PreferenceFragmentCompat;
 
@@ -45,12 +43,12 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
         ArrayList<String> tracking_prefs = new ArrayList<>(Arrays.asList("track_plot_period","track_bag_distance"));
         tracking_prefs.forEach(preference -> {
             EditTextPreference editTextPreference = getPreferenceManager().findPreference(preference);
-            editTextPreference.setOnBindEditTextListener(new EditTextPreference.OnBindEditTextListener() {
-                @Override
-                public void onBindEditText(@NonNull EditText editText) {
-                    editText.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_SIGNED);
-                }
-            });
+            if (editTextPreference == null) {
+                return;
+            }
+            editTextPreference.setOnBindEditTextListener(editText ->
+                editText.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_SIGNED)
+            );
         });
     }
 
@@ -68,11 +66,11 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
     }
 
     private String getResourceString(String name, String value) {
-        int nameResourceID = getResources().getIdentifier(name, "string", getContext().getApplicationInfo().packageName);
+        int nameResourceID = getResources().getIdentifier(name, "string", requireContext().getApplicationInfo().packageName);
         if (nameResourceID == 0) {
             throw new IllegalArgumentException("No resource string found with name " + name);
         }
 
-        return getContext().getString(nameResourceID, value);
+        return requireContext().getString(nameResourceID, value);
     }
 }
