@@ -204,7 +204,7 @@ public class LiveTrackingFragment extends Fragment implements ActivityCompat.OnR
         }
     }
 
-    public void requestPermission(String permission, int permissionDetail) {
+    private void requestPermission(String permission, int permissionDetail) {
         if (!hasPermission(permission)) {
             requestPermissions(new String[]{permission}, PERMISSION_REQUEST);
         }
