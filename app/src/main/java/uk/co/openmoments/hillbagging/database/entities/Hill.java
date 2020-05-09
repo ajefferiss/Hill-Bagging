@@ -1,8 +1,11 @@
 package uk.co.openmoments.hillbagging.database.entities;
 
+import android.location.Location;
+
 import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 @Entity(tableName = "hill")
@@ -48,6 +51,9 @@ public class Hill {
     @ColumnInfo(name = "longitude")
     private String longitude;
 
+    @Ignore
+    private Location hillLocation;
+
     public Hill(int hillId, int hillBaggingId, String name, String region, String area, String topOSelection, String county, float metres, float feet, String hillURL, String latitude, String longitude) {
         this.hillId = hillId;
         this.hillBaggingId = hillBaggingId;
@@ -61,6 +67,10 @@ public class Hill {
         this.hillURL = hillURL;
         this.latitude = latitude;
         this.longitude = longitude;
+
+        hillLocation = new Location("");
+        hillLocation.setLatitude(Double.valueOf(latitude));
+        hillLocation.setLongitude(Double.valueOf(longitude));
     }
 
     public int getHillId() {
@@ -153,5 +163,9 @@ public class Hill {
 
     public void setLongitude(String longitude) {
         this.longitude = longitude;
+    }
+
+    public float calculateDistanceFrom(Location location) {
+        return hillLocation.distanceTo(location);
     }
 }

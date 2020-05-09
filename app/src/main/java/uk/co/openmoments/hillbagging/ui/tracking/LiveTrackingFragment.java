@@ -37,9 +37,15 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.PolylineOptions;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 import uk.co.openmoments.hillbagging.R;
+import uk.co.openmoments.hillbagging.database.AppDatabase;
+import uk.co.openmoments.hillbagging.database.entities.HillWithClassification;
+import uk.co.openmoments.hillbagging.database.entities.HillsWalked;
 import uk.co.openmoments.hillbagging.service.TrackerService;
 
 import static android.content.Context.LOCATION_SERVICE;
@@ -50,9 +56,13 @@ public class LiveTrackingFragment extends Fragment implements ActivityCompat.OnR
     private MapView mapView = null;
     private GoogleMap googleMap = null;
     private ArrayList<LatLng> points;
+    private List<HillWithClassification> hills;
+    private AppDatabase database;
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView;
+        database = AppDatabase.getDatabase(getContext());
+        hills = database.hillDao().getAll();
 
         if (!hasPermission(Manifest.permission.ACCESS_FINE_LOCATION) || !hasPermission(Manifest.permission.FOREGROUND_SERVICE)) {
             rootView = inflater.inflate(R.layout.live_tracking_permission_denied, container, false);
@@ -230,6 +240,23 @@ public class LiveTrackingFragment extends Fragment implements ActivityCompat.OnR
             if (lastKnownLocation != null) {
                 points.add(new LatLng(lastKnownLocation.getLatitude(), lastKnownLocation.getLongitude()));
                 redrawLine();
+
+                SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(requireContext());
+                int bagDistance = Integer.parseInt(sharedPreferences.getString("auto_bag_distance", "10"));
+
+                hills.forEach(hill -> {
+                    if (hill.hill.calculateDistanceFrom(lastKnownLocation) <= bagDistance) {
+                        @SuppressLint("SimpleDateFormat") SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+                        Date date = new Date();
+
+                        HillsWalked hillWalked = new HillsWalked();
+                        hillWalked.setHillId(hill.hill.getHillId());
+                        hillWalked.setWalkedDate(java.sql.Date.valueOf(dateFormat.format(date)));
+                        database.hillWalkedDAO().insertAll(hillWalked);
+
+                        Toast.makeText(getContext(), "Bagged " + hill.hill.getName() + "on " + dateFormat.format(date), Toast.LENGTH_LONG).show();
+                    }
+                });
             }
         }
     };
