@@ -22,4 +22,10 @@
         android:name="uk.co.openmoments.hillbagging.ui.tracking.LiveTrackingFragment"
         android:label="@string/title_live_tracking"
         tools:layout="@layout/fragment_live_tracking" />
+
+    <fragment
+        android:id="@+id/navigation_nearby"
+        android:name="uk.co.openmoments.hillbagging.ui.nearby.NearbyFragment"
+        android:label="@string/title_nearby"
+        tools:layout="@layout/fragment_nearby" />
 </navigation>
