@@ -17,24 +17,15 @@ import android.view.ViewGroup;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.Observer;
 import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
-import java.lang.reflect.Array;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 import uk.co.openmoments.hillbagging.R;
 import uk.co.openmoments.hillbagging.database.AppDatabase;
-import uk.co.openmoments.hillbagging.database.entities.Hill;
-import uk.co.openmoments.hillbagging.database.entities.HillWithClassification;
-import uk.co.openmoments.hillbagging.database.entities.HillsWithWalked;
 import uk.co.openmoments.hillbagging.interfaces.LocationChangedListener;
 import uk.co.openmoments.hillbagging.location.HillLocationListener;
 import uk.co.openmoments.hillbagging.ui.adapters.HillsAdapter;
@@ -44,12 +35,10 @@ public class NearbyFragment extends Fragment implements LocationChangedListener 
 
     private static final String TAG = NearbyFragment.class.getSimpleName();
     private AppDatabase database;
-    private EmptyRecyclerView recyclerView;
     private HillsAdapter recyclerViewAdapter;
     private LocationManager locationManager;
     private LocationListener[] locationListeners = new LocationListener[]{
         new HillLocationListener(LocationManager.GPS_PROVIDER, NearbyFragment.this),
-        new HillLocationListener(LocationManager.NETWORK_PROVIDER, NearbyFragment.this)
     };
 
 
@@ -63,9 +52,10 @@ public class NearbyFragment extends Fragment implements LocationChangedListener 
 
     public View onCreateView(@Nullable LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
+        assert inflater != null;
         View root = inflater.inflate(R.layout.fragment_nearby, container, false);
 
-        recyclerView = root.findViewById(R.id.nearby_results_recycler_view);
+        EmptyRecyclerView recyclerView = root.findViewById(R.id.nearby_results_recycler_view);
         recyclerViewAdapter = new HillsAdapter(getContext(), false);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(
@@ -105,12 +95,9 @@ public class NearbyFragment extends Fragment implements LocationChangedListener 
         PointF p3 = calculateDerivedPosition(center, 1.1 * radius, 180);
         PointF p4 = calculateDerivedPosition(center, 1.1 * radius, 270);
 
-        database.hillDao().searchByPosition(p1.x, p3.x, p2.y, p4.y).observe(this, new Observer<List<Hill>>() {
-            @Override
-            public void onChanged(@Nullable List<Hill> hills) {
-                recyclerViewAdapter.setHillsTasks(hills);
-            }
-        });
+        database.hillDao().searchByPosition(p1.x, p3.x, p2.y, p4.y).observe(this,
+                hills -> recyclerViewAdapter.setHillsTasks(hills)
+        );
     }
 
     /**
@@ -150,12 +137,6 @@ public class NearbyFragment extends Fragment implements LocationChangedListener 
             Log.e(TAG, "Unable to start location tracking as permission denied");
             return;
         }
-
-/*        try {
-            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 1000, 10.0f, locationListeners[1]);
-        } catch (IllegalArgumentException iae) {
-            Log.e(TAG, "Network provider does not exist: ", iae);
-        }*/
 
         try {
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 10.0f, locationListeners[0]);
