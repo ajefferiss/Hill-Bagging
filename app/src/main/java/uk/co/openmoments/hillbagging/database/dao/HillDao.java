@@ -26,6 +26,9 @@ public interface HillDao {
     @Query("SELECT * FROM hill WHERE name LIKE :name")
     LiveData<List<Hill>> searchByName(String name);
 
+    @Query("SELECT * FROM hill WHERE latitude > :lat1 AND latitude < :lat AND longitude < :lon AND longitude > :lon1")
+    LiveData<List<Hill>> searchByPosition(float lat, float lat1, float lon, float lon1);
+
     @Insert
     void insertAll(Hill... hills);
 

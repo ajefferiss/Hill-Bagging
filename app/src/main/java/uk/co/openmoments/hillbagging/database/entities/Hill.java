@@ -45,16 +45,18 @@ public class Hill {
     @ColumnInfo(name = "hill_url")
     private String hillURL;
 
+    @NonNull
     @ColumnInfo(name = "latitude")
-    private String latitude;
+    private float latitude;
 
+    @NonNull
     @ColumnInfo(name = "longitude")
-    private String longitude;
+    private float longitude;
 
     @Ignore
     private Location hillLocation;
 
-    public Hill(int hillId, int hillBaggingId, String name, String region, String area, String topOSelection, String county, float metres, float feet, String hillURL, String latitude, String longitude) {
+    public Hill(int hillId, int hillBaggingId, String name, String region, String area, String topOSelection, String county, float metres, float feet, String hillURL, float latitude, float longitude) {
         this.hillId = hillId;
         this.hillBaggingId = hillBaggingId;
         this.name = name;
@@ -69,8 +71,8 @@ public class Hill {
         this.longitude = longitude;
 
         hillLocation = new Location("");
-        hillLocation.setLatitude(Double.valueOf(latitude));
-        hillLocation.setLongitude(Double.valueOf(longitude));
+        hillLocation.setLatitude(latitude);
+        hillLocation.setLongitude(longitude);
     }
 
     public int getHillId() {
@@ -149,19 +151,19 @@ public class Hill {
 
     public void setHillURL(String hillURL) { this.hillURL = hillURL; }
 
-    public String getLatitude() {
+    public float getLatitude() {
         return latitude;
     }
 
-    public void setLatitude(String latitude) {
+    public void setLatitude(float latitude) {
         this.latitude = latitude;
     }
 
-    public String getLongitude() {
+    public float getLongitude() {
         return longitude;
     }
 
-    public void setLongitude(String longitude) {
+    public void setLongitude(float longitude) {
         this.longitude = longitude;
     }
 
