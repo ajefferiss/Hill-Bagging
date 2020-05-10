@@ -2,7 +2,6 @@ package uk.co.openmoments.hillbagging;
 
 import android.Manifest;
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -56,13 +55,11 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.settings_menu:
-                startActivity(new Intent(MainActivity.this, SettingsActivity.class));
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
+        if (item.getItemId() == R.id.settings_menu) {
+            startActivity(new Intent(MainActivity.this, SettingsActivity.class));
+            return true;
         }
+        return super.onOptionsItemSelected(item);
     }
 
     public boolean hasPermission(String permission) {
@@ -82,12 +79,9 @@ public class MainActivity extends AppCompatActivity {
                 alertBuilder.setCancelable(true);
                 alertBuilder.setTitle(getString(R.string.perm_required_title));
                 alertBuilder.setMessage(getString(permissionDetail));
-                alertBuilder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        requestPermissions(new String[]{permission}, PERMISSION_REQUEST);
-                    }
-                });
+                alertBuilder.setPositiveButton(android.R.string.yes, (dialog, which) -> requestPermissions(
+                        new String[]{permission}, PERMISSION_REQUEST)
+                );
                 alertBuilder.show();
             } else {
                 requestPermissions(new String[]{permission}, PERMISSION_REQUEST);

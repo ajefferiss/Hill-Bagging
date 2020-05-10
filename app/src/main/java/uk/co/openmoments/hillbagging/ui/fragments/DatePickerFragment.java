@@ -1,10 +1,12 @@
 package uk.co.openmoments.hillbagging.ui.fragments;
 
+import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.os.Bundle;
 import android.widget.DatePicker;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
 
 import java.text.SimpleDateFormat;
@@ -16,6 +18,7 @@ public class DatePickerFragment extends DialogFragment implements DatePickerDial
 
     private DialogFragmentListener callback;
 
+    @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         final Calendar calendar = Calendar.getInstance();
@@ -23,14 +26,14 @@ public class DatePickerFragment extends DialogFragment implements DatePickerDial
         int month = calendar.get(Calendar.MONTH);
         int day = calendar.get(Calendar.DAY_OF_MONTH);
 
-        return new DatePickerDialog(getActivity(), this, year, month, day);
+        return new DatePickerDialog(requireActivity(), this, year, month, day);
     }
 
     public void onDateSet(DatePicker view, int year, int month, int day) {
         Calendar calendar = Calendar.getInstance();
         calendar.set(year, month, day);
 
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+        @SuppressLint("SimpleDateFormat") SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
         callback.receiveResult(format.format(calendar.getTime()));
     }
 

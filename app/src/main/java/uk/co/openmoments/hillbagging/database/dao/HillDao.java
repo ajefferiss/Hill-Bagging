@@ -2,8 +2,6 @@ package uk.co.openmoments.hillbagging.database.dao;
 
 import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
-import androidx.room.Delete;
-import androidx.room.Insert;
 import androidx.room.Query;
 
 import java.util.List;
@@ -28,10 +26,4 @@ public interface HillDao {
 
     @Query("SELECT * FROM hill WHERE latitude > :lat1 AND latitude < :lat AND longitude < :lon AND longitude > :lon1")
     LiveData<List<Hill>> searchByPosition(float lat, float lat1, float lon, float lon1);
-
-    @Insert
-    void insertAll(Hill... hills);
-
-    @Delete
-    void delete(Hill hill);
 }

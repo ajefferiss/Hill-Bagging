@@ -9,24 +9,19 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
-import java.util.List;
-
 import uk.co.openmoments.hillbagging.R;
 import uk.co.openmoments.hillbagging.database.AppDatabase;
-import uk.co.openmoments.hillbagging.database.entities.HillsWithWalked;
 import uk.co.openmoments.hillbagging.ui.adapters.HillsAdapter;
 import uk.co.openmoments.hillbagging.ui.views.EmptyRecyclerView;
 
 public class HomeFragment extends Fragment {
 
     private HomeViewModel homeViewModel;
-    private EmptyRecyclerView recyclerView;
     private HillsAdapter recyclerViewAdapter;
     private AppDatabase mDatabase;
     private int hillCount;
@@ -43,11 +38,11 @@ public class HomeFragment extends Fragment {
         View root = inflater.inflate(R.layout.fragment_home, container, false);
         homeViewModel = ViewModelProviders.of(this).get(HomeViewModel.class);
 
-        recyclerView = root.findViewById(R.id.walked_hills_recycler_view);
+        EmptyRecyclerView recyclerView = root.findViewById(R.id.walked_hills_recycler_view);
         recyclerViewAdapter = new HillsAdapter(getContext(), true);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(
-                getContext(), layoutManager.getOrientation()
+                requireContext(), layoutManager.getOrientation()
         );
 
         recyclerView.setHasFixedSize(true);
@@ -58,24 +53,16 @@ public class HomeFragment extends Fragment {
         recyclerView.addItemDecoration(dividerItemDecoration);
 
         final TextView textView = root.findViewById(R.id.text_home);
-        homeViewModel.getText().observe(this, new Observer<String>() {
-            @Override
-            public void onChanged(@Nullable String s) {
-                textView.setText(s);
-            }
-        });
+        homeViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
 
-        mDatabase.hillDao().getAllWalked().observe(this, new Observer<List<HillsWithWalked>>() {
-            @Override
-            public void onChanged(@Nullable List<HillsWithWalked> hillsWalked) {
-                float percentage = hillsWalked.size() / hillCount;
-                String walkedDesc = getResources().getString(R.string.no_hills_walked);
-                if (hillsWalked.size() > 0) {
-                    walkedDesc = getResources().getQuantityString(R.plurals.numberOfHillsWalked, hillsWalked.size(), hillsWalked.size(), percentage);
-                }
-                homeViewModel.setText(walkedDesc);
-                recyclerViewAdapter.setHillsWalkedTasks(hillsWalked);
+        mDatabase.hillDao().getAllWalked().observe(getViewLifecycleOwner(), hillsWalked -> {
+            float percentage = hillsWalked.size() / hillCount;
+            String walkedDesc = getResources().getString(R.string.no_hills_walked);
+            if (hillsWalked.size() > 0) {
+                walkedDesc = getResources().getQuantityString(R.plurals.numberOfHillsWalked, hillsWalked.size(), hillsWalked.size(), percentage);
             }
+            homeViewModel.setText(walkedDesc);
+            recyclerViewAdapter.setHillsWalkedTasks(hillsWalked);
         });
 
         return root;

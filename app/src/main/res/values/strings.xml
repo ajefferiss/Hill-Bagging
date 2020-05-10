@@ -14,7 +14,7 @@
     <string name="hill_walked_height_desc">&lt;b>Height:&lt;/b> %1$.0f(m) %2$.0f(ft)</string>
     <string name="hill_walked_date_desc">&lt;b>Walked:&lt;/b> %1$1s</string>
     <string name="close">Close</string>
-    <string name="hill_dialog_position">&lt;b>Latitude:&lt;/b> %1$s &lt;b>Longitude:&lt;/b> %2$s</string>
+    <string name="hill_dialog_position">&lt;b>Latitude:&lt;/b> %1$f &lt;b>Longitude:&lt;/b> %2$f</string>
     <string name="hill_dialog_view_bagging_url">View on Hill-Bagging</string>
     <string name="hill_dialog_view_map">View on map</string>
     <string name="hill_dialog_mark_walked">Mark Walked</string>

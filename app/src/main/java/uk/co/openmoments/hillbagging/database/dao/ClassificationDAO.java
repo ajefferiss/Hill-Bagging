@@ -1,8 +1,6 @@
 package uk.co.openmoments.hillbagging.database.dao;
 
 import androidx.room.Dao;
-import androidx.room.Delete;
-import androidx.room.Insert;
 import androidx.room.Query;
 
 import java.util.List;
@@ -16,10 +14,4 @@ public interface ClassificationDAO {
 
     @Query("SELECT * FROM classification WHERE classification IN (:classifications)")
     List<Classification> getAllByText(String[] classifications);
-
-    @Insert
-    void insertAll(Classification... classifications);
-
-    @Delete
-    void delete(Classification classification);
 }
