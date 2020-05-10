@@ -129,6 +129,8 @@ public class HillDB {
         int hillNumber = Integer.valueOf(line[hillColMap.get(HillCols.NUMBER)]);
         float metres = Float.valueOf(line[hillColMap.get(HillCols.METRES)]);
         float feet = Float.valueOf(line[hillColMap.get(HillCols.FEET)]);
+        float lat = Float.valueOf(line[hillColMap.get(HillCols.LATITUDE)]);
+        float lon = Float.valueOf(line[hillColMap.get(HillCols.LONGITUDE)]);
 
         String sql = "SELECT number FROM hill WHERE number = " + hillNumber;
         ResultSet result = statement.executeQuery(sql);
@@ -143,9 +145,9 @@ public class HillDB {
                 "metres = " + metres + ", " +
                 "feet = " + feet + ", " +
                 "hill_url = \"" + line[hillColMap.get(HillCols.HILL_BAG_URL)] + "\", " +
-                "latitude = \"" + line[hillColMap.get(HillCols.LATITUDE)] + "\", " +
-                "longitude = \"" + line[hillColMap.get(HillCols.LONGITUDE)] + "\" " +
-                "WHERE number = " + hillNumber;
+                "latitude = " + lat + ", " +
+                "longitude = " + lon +
+                " WHERE number = " + hillNumber;
         } else {
             sql = "INSERT INTO hill(number, name, region, area, topo_section, county, metres, feet, hill_url, latitude, longitude) VALUES(" +
                     hillNumber + ", " +
@@ -157,9 +159,8 @@ public class HillDB {
                     metres + ", " +
                     feet + ", " +
                     "\"" + line[hillColMap.get(HillCols.HILL_BAG_URL)] + "\", " +
-                    "\"" + line[hillColMap.get(HillCols.LATITUDE)] + "\", " +
-                    "\"" + line[hillColMap.get(HillCols.LONGITUDE)] + "\"" +
-                    ");";
+                    lat + ", " +
+                    lon + ");";
         }
         statement.execute(sql);
 
