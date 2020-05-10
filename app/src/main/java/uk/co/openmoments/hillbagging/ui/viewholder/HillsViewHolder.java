@@ -1,5 +1,6 @@
 package uk.co.openmoments.hillbagging.ui.viewholder;
 
+import android.text.Spanned;
 import android.view.View;
 import android.widget.TextView;
 
@@ -10,10 +11,10 @@ import uk.co.openmoments.hillbagging.R;
 
 public class HillsViewHolder extends RecyclerView.ViewHolder implements View.OnLongClickListener {
 
-    ItemLongClickListener itemLongClickListener;
-    public TextView hillName;
-    public TextView hillHeight;
-    public TextView walkedDate;
+    private ItemLongClickListener itemLongClickListener;
+    private TextView hillName;
+    private TextView hillHeight;
+    private TextView walkedDate;
 
     public HillsViewHolder(@NonNull View itemView) {
         super(itemView);
@@ -32,5 +33,17 @@ public class HillsViewHolder extends RecyclerView.ViewHolder implements View.OnL
     public boolean onLongClick(View v) {
         this.itemLongClickListener.onItemLongClick(v, getLayoutPosition());
         return false;
+    }
+
+    public void setHillName(Spanned hillName) {
+        this.hillName.setText(hillName);
+    }
+
+    public void setHillHeight(Spanned hillHeight) {
+        this.hillHeight.setText(hillHeight);
+    }
+
+    public void setWalkedDate(Spanned walkedDate) {
+        this.walkedDate.setText(walkedDate);
     }
 }
