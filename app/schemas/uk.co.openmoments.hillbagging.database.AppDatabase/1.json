@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "e244b83f5ed9c102351e9f3d3576ea1d",
+    "identityHash": "a4a06e124b5ce4bf76efed2769514162",
     "entities": [
       {
         "tableName": "hill",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`hill_id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `number` INTEGER NOT NULL, `name` TEXT NOT NULL, `region` TEXT, `area` TEXT, `topo_section` TEXT, `county` TEXT, `metres` REAL NOT NULL, `feet` REAL NOT NULL, `hill_url` TEXT, `latitude` TEXT, `longitude` TEXT)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`hill_id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `number` INTEGER NOT NULL, `name` TEXT NOT NULL, `region` TEXT, `area` TEXT, `topo_section` TEXT, `county` TEXT, `metres` REAL NOT NULL, `feet` REAL NOT NULL, `hill_url` TEXT, `latitude` REAL NOT NULL, `longitude` REAL NOT NULL)",
         "fields": [
           {
             "fieldPath": "hillId",
@@ -71,14 +71,14 @@
           {
             "fieldPath": "latitude",
             "columnName": "latitude",
-            "affinity": "TEXT",
-            "notNull": false
+            "affinity": "REAL",
+            "notNull": true
           },
           {
             "fieldPath": "longitude",
             "columnName": "longitude",
-            "affinity": "TEXT",
-            "notNull": false
+            "affinity": "REAL",
+            "notNull": true
           }
         ],
         "primaryKey": {
@@ -251,7 +251,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'e244b83f5ed9c102351e9f3d3576ea1d')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'a4a06e124b5ce4bf76efed2769514162')"
     ]
   }
 }
