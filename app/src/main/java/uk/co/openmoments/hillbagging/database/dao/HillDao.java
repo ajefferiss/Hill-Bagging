@@ -6,7 +6,6 @@ import androidx.room.Query;
 
 import java.util.List;
 
-import uk.co.openmoments.hillbagging.database.entities.Hill;
 import uk.co.openmoments.hillbagging.database.entities.HillWithClassification;
 import uk.co.openmoments.hillbagging.database.entities.HillsWithWalked;
 
