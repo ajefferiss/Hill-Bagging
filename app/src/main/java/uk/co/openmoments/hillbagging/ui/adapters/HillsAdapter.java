@@ -73,7 +73,6 @@ public class HillsAdapter extends EmptyRecyclerView.Adapter<HillsViewHolder> imp
         tempText = holder.itemView.getContext().getString(R.string.hill_walked_date_desc, hillWalkedDate);
         holder.setWalkedDate(Html.fromHtml(tempText, Html.FROM_HTML_MODE_LEGACY));
 
-        // Make the hill walked date effectively final...
         holder.setItemLongClickListener((view, pos) -> {
             currentHillPosition = pos;
             tempView = view;
