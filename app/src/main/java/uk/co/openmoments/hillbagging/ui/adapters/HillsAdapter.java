@@ -53,7 +53,12 @@ public class HillsAdapter extends EmptyRecyclerView.Adapter<HillsViewHolder> imp
     @Override
     public void onBindViewHolder(@NonNull HillsViewHolder holder, int position) {
         Hill hill = showHillsWalked ? mHillsWalkedDataSet.get(position).hill : mHillsDataSet.get(position);
-        String hillWalkedDate = showHillsWalked ? mHillsWalkedDataSet.get(position).hillsWalked.getWalkedDate().toString() : "";
+
+        String hillWalkedDate = "";
+        if (mHillsWalkedDataSet.get(position).hillsWalked != null) {
+            hillWalkedDate = mHillsWalkedDataSet.get(position).hillsWalked.getWalkedDate().toString();
+        }
+
         String tempText;
 
         holder.setHillName(SpannedString.valueOf(hill.getName()));
@@ -63,6 +68,8 @@ public class HillsAdapter extends EmptyRecyclerView.Adapter<HillsViewHolder> imp
         tempText = holder.itemView.getContext().getString(R.string.hill_walked_date_desc, hillWalkedDate);
         holder.setWalkedDate(Html.fromHtml(tempText, Html.FROM_HTML_MODE_LEGACY));
 
+        // Make the hill walked date effectively final...
+        String finalHillWalkedDate = hillWalkedDate;
         holder.setItemLongClickListener((view, pos) -> {
             currentHillPosition = pos;
             final AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
@@ -86,7 +93,7 @@ public class HillsAdapter extends EmptyRecyclerView.Adapter<HillsViewHolder> imp
             tempTextView.setText(Html.fromHtml(tempText1, Html.FROM_HTML_MODE_LEGACY));
 
             tempTextView = dialogView.findViewById(R.id.hill_dialog_walked_date);
-            tempText1 = view.getContext().getString(R.string.hill_walked_date_desc, hillWalkedDate);
+            tempText1 = view.getContext().getString(R.string.hill_walked_date_desc, finalHillWalkedDate);
             tempTextView.setText(Html.fromHtml(tempText1, Html.FROM_HTML_MODE_LEGACY));
 
             Button hillButton = dialogView.findViewById(R.id.hill_dialog_view_map);

@@ -21,8 +21,8 @@ public interface HillDao {
     @Query("SELECT COUNT(*) FROM hill")
     int getHillCount();
 
-    @Query("SELECT * FROM hill WHERE name LIKE :name")
-    LiveData<List<Hill>> searchByName(String name);
+    @Query("SELECT hill.hill_id, hill.number, hill.name, hill.region, hill.area, hill.topo_section, hill.county, hill.metres, hill.feet, hill.hill_url, hill.latitude, hill.longitude, hills_walked.walked_id, hills_walked.hill_id, hills_walked.walked_date FROM hill LEFT JOIN hills_walked ON hill.hill_id = hills_walked.hill_id WHERE name LIKE :name")
+    LiveData<List<HillsWithWalked>> searchByName(String name);
 
     @Query("SELECT * FROM hill WHERE latitude > :lat1 AND latitude < :lat AND longitude < :lon AND longitude > :lon1")
     LiveData<List<Hill>> searchByPosition(float lat, float lat1, float lon, float lon1);

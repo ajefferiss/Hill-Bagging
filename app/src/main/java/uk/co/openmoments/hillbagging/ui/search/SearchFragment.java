@@ -49,7 +49,7 @@ public class SearchFragment extends Fragment {
         });
 
         EmptyRecyclerView recyclerView = root.findViewById(R.id.search_results_recycler_view);
-        recyclerViewAdapter = new HillsAdapter(getContext(), false);
+        recyclerViewAdapter = new HillsAdapter(getContext(), true);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(
             requireContext(), layoutManager.getOrientation()
@@ -71,6 +71,6 @@ public class SearchFragment extends Fragment {
         in.hideSoftInputFromWindow(hillSearchEditText.getWindowToken(), 0);
 
         String searchValue = "%" + hillSearchEditText.getText().toString() + "%";
-        mDatabase.hillDao().searchByName(searchValue).observe(getViewLifecycleOwner(), hills -> recyclerViewAdapter.setHillsTasks(hills));
+        mDatabase.hillDao().searchByName(searchValue).observe(getViewLifecycleOwner(), hills -> recyclerViewAdapter.setHillsWalkedTasks(hills));
     }
 }
