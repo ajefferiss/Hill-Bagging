@@ -31,16 +31,12 @@ import uk.co.openmoments.hillbagging.ui.views.EmptyRecyclerView;
 
 public class HillsAdapter extends EmptyRecyclerView.Adapter<HillsViewHolder> implements DialogFragmentListener {
     private Context context;
-    private boolean showHillsWalked;
     private int currentHillPosition;
-    private List<Hill> mHillsDataSet;
-    private List<HillsWithWalked> mHillsWalkedDataSet;
+    private List<HillsWithWalked> mHillsDataSet;
     private final static String MAPS_URI = "https://www.google.com/maps/@?api=1&map_action=map&center=%s,%s&basemap=terrain";
 
-    public HillsAdapter(Context context, boolean showHillsWalked) {
+    public HillsAdapter(Context context) {
         this.context = context;
-        this.showHillsWalked = showHillsWalked;
-
     }
 
     @NonNull
@@ -52,11 +48,12 @@ public class HillsAdapter extends EmptyRecyclerView.Adapter<HillsViewHolder> imp
 
     @Override
     public void onBindViewHolder(@NonNull HillsViewHolder holder, int position) {
-        Hill hill = showHillsWalked ? mHillsWalkedDataSet.get(position).hill : mHillsDataSet.get(position);
+        Hill hill = mHillsDataSet.get(position).hill;
+        HillsWalked hillsWalked = mHillsDataSet.get(position).hillsWalked;
 
         String hillWalkedDate = "";
-        if (mHillsWalkedDataSet.get(position).hillsWalked != null) {
-            hillWalkedDate = mHillsWalkedDataSet.get(position).hillsWalked.getWalkedDate().toString();
+        if (hillsWalked != null) {
+            hillWalkedDate = hillsWalked.getWalkedDate().toString();
         }
 
         String tempText;
@@ -75,8 +72,7 @@ public class HillsAdapter extends EmptyRecyclerView.Adapter<HillsViewHolder> imp
             final AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
             final View dialogView = LayoutInflater.from(view.getContext()).inflate(R.layout.dialog_hill_details, null);
 
-            if (showHillsWalked) {
-                dialogView.findViewById(R.id.walked_linear_layout).setVisibility(View.VISIBLE);
+            if (hillsWalked != null) {
                 dialogView.findViewById(R.id.mark_walked_linear_layout).setVisibility(View.GONE);
             }
 
@@ -125,14 +121,6 @@ public class HillsAdapter extends EmptyRecyclerView.Adapter<HillsViewHolder> imp
 
     @Override
     public int getItemCount() {
-        if (showHillsWalked) {
-            if (mHillsWalkedDataSet == null) {
-                return 0;
-            }
-
-            return mHillsWalkedDataSet.size();
-        }
-
         if (mHillsDataSet == null) {
             return 0;
         }
@@ -140,13 +128,8 @@ public class HillsAdapter extends EmptyRecyclerView.Adapter<HillsViewHolder> imp
         return mHillsDataSet.size();
     }
 
-    public void setHillsTasks(List<Hill> hills) {
+    public void setHillsTasks(List<HillsWithWalked> hills) {
         mHillsDataSet = hills;
-        notifyDataSetChanged();
-    }
-
-    public void setHillsWalkedTasks(List<HillsWithWalked> hills) {
-        mHillsWalkedDataSet = hills;
         notifyDataSetChanged();
     }
 
@@ -154,11 +137,11 @@ public class HillsAdapter extends EmptyRecyclerView.Adapter<HillsViewHolder> imp
     public void receiveResult(String value) {
         AppDatabase database = AppDatabase.getDatabase(context);
         HillsWalked hillWalked = new HillsWalked();
-        hillWalked.setHillId(mHillsDataSet.get(currentHillPosition).getHillId());
+        hillWalked.setHillId(mHillsDataSet.get(currentHillPosition).hill.getHillId());
         hillWalked.setWalkedDate(java.sql.Date.valueOf(value));
         database.hillWalkedDAO().insertAll(hillWalked);
 
-        String hillName = mHillsDataSet.get(currentHillPosition).getName();
+        String hillName = mHillsDataSet.get(currentHillPosition).hill.getName();
         Toast.makeText(context, "Walked " + hillName + "on " + value, Toast.LENGTH_LONG).show();
     }
 }

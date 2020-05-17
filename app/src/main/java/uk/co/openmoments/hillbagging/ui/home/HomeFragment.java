@@ -39,7 +39,7 @@ public class HomeFragment extends Fragment {
         homeViewModel = ViewModelProviders.of(this).get(HomeViewModel.class);
 
         EmptyRecyclerView recyclerView = root.findViewById(R.id.walked_hills_recycler_view);
-        recyclerViewAdapter = new HillsAdapter(getContext(), true);
+        recyclerViewAdapter = new HillsAdapter(getContext());
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(
                 requireContext(), layoutManager.getOrientation()
@@ -62,7 +62,7 @@ public class HomeFragment extends Fragment {
                 walkedDesc = getResources().getQuantityString(R.plurals.numberOfHillsWalked, hillsWalked.size(), hillsWalked.size(), percentage);
             }
             homeViewModel.setText(walkedDesc);
-            recyclerViewAdapter.setHillsWalkedTasks(hillsWalked);
+            recyclerViewAdapter.setHillsTasks(hillsWalked);
         });
 
         return root;

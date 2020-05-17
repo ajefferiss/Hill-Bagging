@@ -58,7 +58,7 @@ public class NearbyFragment extends Fragment implements LocationChangedListener 
         View root = inflater.inflate(R.layout.fragment_nearby, container, false);
 
         EmptyRecyclerView recyclerView = root.findViewById(R.id.nearby_results_recycler_view);
-        recyclerViewAdapter = new HillsAdapter(getContext(), true);
+        recyclerViewAdapter = new HillsAdapter(getContext());
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(
             requireContext(), layoutManager.getOrientation()
@@ -95,7 +95,7 @@ public class NearbyFragment extends Fragment implements LocationChangedListener 
 
         database.hillDao().searchByPosition(
                 radialPoints.get(0).x, radialPoints.get(2).x, radialPoints.get(1).y, radialPoints.get(3).y
-        ).observe(this, hills -> recyclerViewAdapter.setHillsWalkedTasks(hills));
+        ).observe(this, hills -> recyclerViewAdapter.setHillsTasks(hills));
     }
 
     private void requestLocationUpdates() {
