@@ -58,7 +58,7 @@ public class NearbyFragment extends Fragment implements LocationChangedListener 
         View root = inflater.inflate(R.layout.fragment_nearby, container, false);
 
         EmptyRecyclerView recyclerView = root.findViewById(R.id.nearby_results_recycler_view);
-        recyclerViewAdapter = new HillsAdapter(getContext(), false);
+        recyclerViewAdapter = new HillsAdapter(getContext());
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(
             requireContext(), layoutManager.getOrientation()

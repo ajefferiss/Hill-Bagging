@@ -49,6 +49,7 @@ import uk.co.openmoments.hillbagging.R;
 import uk.co.openmoments.hillbagging.database.AppDatabase;
 import uk.co.openmoments.hillbagging.database.entities.Hill;
 import uk.co.openmoments.hillbagging.database.entities.HillsWalked;
+import uk.co.openmoments.hillbagging.database.entities.HillsWithWalked;
 import uk.co.openmoments.hillbagging.location.LocationHelpers;
 import uk.co.openmoments.hillbagging.service.TrackerService;
 
@@ -249,7 +250,7 @@ public class LiveTrackingFragment extends Fragment implements ActivityCompat.OnR
                 SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(requireContext());
                 double bagDistance = Double.parseDouble(sharedPreferences.getString("track_bag_distance", "10.0"));
                 List<PointF> radialPoints = LocationHelpers.locationThresholdPoints(lastKnownLocation, bagDistance);
-                LiveData<List<Hill>> temp = database.hillDao().searchByPosition(
+                LiveData<List<HillsWithWalked>> temp = database.hillDao().searchByPosition(
                         radialPoints.get(0).x, radialPoints.get(2).x, radialPoints.get(1).y, radialPoints.get(3).y
                 );
 
@@ -258,14 +259,14 @@ public class LiveTrackingFragment extends Fragment implements ActivityCompat.OnR
                         @SuppressLint("SimpleDateFormat") SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
                         Date date = new Date();
 
-                        int hillId = hill.getHillId();
+                        int hillId = hill.hill.getHillId();
                         if (database.hillWalkedDAO().getHillById(hillId).isEmpty()) {
                             HillsWalked hillWalked = new HillsWalked();
                             hillWalked.setHillId(hillId);
                             hillWalked.setWalkedDate(java.sql.Date.valueOf(dateFormat.format(date)));
                             database.hillWalkedDAO().insertAll(hillWalked);
 
-                            String baggedHill = getResources().getString(R.string.live_tracking_bagged_hill, hill.getName());
+                            String baggedHill = getResources().getString(R.string.live_tracking_bagged_hill, hill.hill.getName());
                             Toast.makeText(getContext(), baggedHill, Toast.LENGTH_LONG).show();
                         }
                     });
