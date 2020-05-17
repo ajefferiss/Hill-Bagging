@@ -9,6 +9,7 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.graphics.PointF;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
@@ -23,10 +24,12 @@ import android.widget.ImageButton;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.LiveData;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.preference.PreferenceManager;
 
@@ -44,8 +47,9 @@ import java.util.List;
 
 import uk.co.openmoments.hillbagging.R;
 import uk.co.openmoments.hillbagging.database.AppDatabase;
-import uk.co.openmoments.hillbagging.database.entities.HillWithClassification;
+import uk.co.openmoments.hillbagging.database.entities.Hill;
 import uk.co.openmoments.hillbagging.database.entities.HillsWalked;
+import uk.co.openmoments.hillbagging.location.LocationHelpers;
 import uk.co.openmoments.hillbagging.service.TrackerService;
 
 import static android.content.Context.LOCATION_SERVICE;
@@ -56,13 +60,18 @@ public class LiveTrackingFragment extends Fragment implements ActivityCompat.OnR
     private MapView mapView = null;
     private GoogleMap googleMap = null;
     private ArrayList<LatLng> points;
-    private List<HillWithClassification> hills;
     private AppDatabase database;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        database = AppDatabase.getDatabase(getContext());
+        points = new ArrayList<>();
+        registerReceiver();
+    }
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView;
-        database = AppDatabase.getDatabase(getContext());
-        hills = database.hillDao().getAll();
 
         if (!hasPermission(Manifest.permission.ACCESS_FINE_LOCATION) || !hasPermission(Manifest.permission.FOREGROUND_SERVICE)) {
             rootView = inflater.inflate(R.layout.live_tracking_permission_denied, container, false);
@@ -75,8 +84,6 @@ public class LiveTrackingFragment extends Fragment implements ActivityCompat.OnR
 
             return rootView;
         }
-
-        points = new ArrayList<>();
 
         LocationManager locationManager = (LocationManager) requireActivity().getSystemService(LOCATION_SERVICE);
         if (locationManager == null || !locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
@@ -96,8 +103,6 @@ public class LiveTrackingFragment extends Fragment implements ActivityCompat.OnR
 
         button = rootView.findViewById(R.id.live_track_stop);
         button.setOnClickListener(v -> stopTrackerService());
-
-        registerReceiver();
 
         return rootView;
     }
@@ -218,8 +223,8 @@ public class LiveTrackingFragment extends Fragment implements ActivityCompat.OnR
 
     private void registerReceiver() {
         LocalBroadcastManager.getInstance(requireContext()).registerReceiver(
-                locationMessageReceiver,
-                new IntentFilter(TrackerService.LOCATION_UPDATES_RECEIVER)
+            locationMessageReceiver,
+            new IntentFilter(TrackerService.LOCATION_UPDATES_RECEIVER)
         );
     }
 
@@ -242,26 +247,29 @@ public class LiveTrackingFragment extends Fragment implements ActivityCompat.OnR
                 redrawLine();
 
                 SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(requireContext());
-                int bagDistance = Integer.parseInt(sharedPreferences.getString("track_bag_distance", "10"));
+                double bagDistance = Double.parseDouble(sharedPreferences.getString("track_bag_distance", "10.0"));
+                List<PointF> radialPoints = LocationHelpers.locationThresholdPoints(lastKnownLocation, bagDistance);
+                LiveData<List<Hill>> temp = database.hillDao().searchByPosition(
+                        radialPoints.get(0).x, radialPoints.get(2).x, radialPoints.get(1).y, radialPoints.get(3).y
+                );
 
-                hills.forEach(hill -> {
-                    if (hill.hill.calculateDistanceFrom(lastKnownLocation) <= bagDistance) {
+                if (temp.getValue() != null) {
+                    temp.getValue().forEach(hill -> {
                         @SuppressLint("SimpleDateFormat") SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
                         Date date = new Date();
 
-                        int hillId = hill.hill.getHillId();
+                        int hillId = hill.getHillId();
                         if (database.hillWalkedDAO().getHillById(hillId).isEmpty()) {
                             HillsWalked hillWalked = new HillsWalked();
                             hillWalked.setHillId(hillId);
                             hillWalked.setWalkedDate(java.sql.Date.valueOf(dateFormat.format(date)));
                             database.hillWalkedDAO().insertAll(hillWalked);
 
-                            String baggedHill = getResources().getString(R.string.live_tracking_bagged_hill, hill.hill.getName());
+                            String baggedHill = getResources().getString(R.string.live_tracking_bagged_hill, hill.getName());
                             Toast.makeText(getContext(), baggedHill, Toast.LENGTH_LONG).show();
                         }
-
-                    }
-                });
+                    });
+                }
             }
         }
     };

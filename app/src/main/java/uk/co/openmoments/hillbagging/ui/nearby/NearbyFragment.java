@@ -23,11 +23,13 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import java.util.Arrays;
+import java.util.List;
 
 import uk.co.openmoments.hillbagging.R;
 import uk.co.openmoments.hillbagging.database.AppDatabase;
 import uk.co.openmoments.hillbagging.interfaces.LocationChangedListener;
 import uk.co.openmoments.hillbagging.location.HillLocationListener;
+import uk.co.openmoments.hillbagging.location.LocationHelpers;
 import uk.co.openmoments.hillbagging.ui.adapters.HillsAdapter;
 import uk.co.openmoments.hillbagging.ui.views.EmptyRecyclerView;
 
@@ -89,47 +91,11 @@ public class NearbyFragment extends Fragment implements LocationChangedListener 
         Log.d(TAG, "Finding hills near: " + lastKnownLocation);
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(requireContext());
         double radius = (Integer.parseInt(sharedPreferences.getString("nearby_distance", "10")) * 1000.0);
-        PointF center = new PointF((float)lastKnownLocation.getLatitude(), (float) lastKnownLocation.getLongitude());
-        PointF p1 = calculateDerivedPosition(center, 1.1 * radius, 0);
-        PointF p2 = calculateDerivedPosition(center, 1.1 * radius, 90);
-        PointF p3 = calculateDerivedPosition(center, 1.1 * radius, 180);
-        PointF p4 = calculateDerivedPosition(center, 1.1 * radius, 270);
+        List<PointF> radialPoints = LocationHelpers.locationThresholdPoints(lastKnownLocation, radius);
 
-        database.hillDao().searchByPosition(p1.x, p3.x, p2.y, p4.y).observe(this,
-                hills -> recyclerViewAdapter.setHillsTasks(hills)
-        );
-    }
-
-    /**
-     * Calculates the end-point from a given source at a given range (meters) and bearing (degrees).
-     * This methods uses simple geometry equations to calculate the end-point. Taken from:
-     * https://stackoverflow.com/questions/3695224/sqlite-getting-nearest-locations-with-latitude-and-longitude
-     *
-     * @param point - Point of origin
-     * @param range - Range in metres
-     * @param bearing - Bearing in degrees
-     * @return End-point from the source given the desired range and bearing
-     */
-    private PointF calculateDerivedPosition(PointF point, double range, double bearing) {
-        double earthRadius = 6371000; // Radius of earth in metres
-        double latA = Math.toRadians(point.x);
-        double lonA = Math.toRadians(point.y);
-        double angularDistance = range/earthRadius;
-        double trueCourse = Math.toRadians(bearing);
-
-        double lat = Math.asin(
-            Math.sin(latA) * Math.cos(angularDistance) + Math.cos(latA) * Math.sin(angularDistance) * Math.cos(trueCourse)
-        );
-        double dLon = Math.atan2(
-            Math.sin(trueCourse) * Math.sin(angularDistance) * Math.cos(latA),
-            Math.cos(angularDistance) - Math.sin(latA) * Math.sin(lat)
-        );
-        double lon = ((lonA + dLon + Math.PI) % (Math.PI * 2)) - Math.PI;
-
-        lat = Math.toDegrees(lat);
-        lon = Math.toDegrees(lon);
-
-        return new PointF((float)lat, (float)lon);
+        database.hillDao().searchByPosition(
+                radialPoints.get(0).x, radialPoints.get(2).x, radialPoints.get(1).y, radialPoints.get(3).y
+        ).observe(this, hills -> recyclerViewAdapter.setHillsTasks(hills));
     }
 
     private void requestLocationUpdates() {
