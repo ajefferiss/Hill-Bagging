@@ -20,7 +20,7 @@ import uk.co.openmoments.hillbagging.database.entities.Hill;
 import uk.co.openmoments.hillbagging.database.entities.HillClassification;
 import uk.co.openmoments.hillbagging.database.entities.HillsWalked;
 
-@Database(entities = {Hill.class, Classification.class, HillsWalked.class, HillClassification.class}, version = 1)
+@Database(entities = {Hill.class, Classification.class, HillsWalked.class, HillClassification.class}, version = 2)
 @TypeConverters({DateConverter.class})
 public abstract class AppDatabase extends RoomDatabase {
     public abstract HillDao hillDao();
@@ -42,7 +42,7 @@ public abstract class AppDatabase extends RoomDatabase {
                     INSTANCE = Room.databaseBuilder(context.getApplicationContext(),
                             AppDatabase.class,
                             "hill_bagging.db"
-                    ).createFromAsset("database/hill_bagging.db").allowMainThreadQueries().build();
+                    ).createFromAsset("database/hill_bagging.db").fallbackToDestructiveMigrationFrom(1, 2).allowMainThreadQueries().build();
                 }
             }
         }
