@@ -8,4 +8,11 @@
         android:title="@string/title_settings"
         app:showAsAction="collapseActionView" />
 
+    <!-- HillBagging import / export -->
+    <item
+        android:id="@+id/import_export_hill_bagging_menu"
+        android:icon="@drawable/ic_import_export_black_24dp"
+        android:title="@string/title_import_export"
+        app:showAsAction="collapseActionView" />
+
 </menu>
