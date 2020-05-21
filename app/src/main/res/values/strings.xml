@@ -76,4 +76,7 @@
     <string name="import_title">Import Hills</string>
     <string name="import_hill">Import</string>
     <string name="import_hill_desc">Import walked hills from Hill-Bagging.co.uk CSV download</string>
+    <string name="import_file_choose">Choose a CSV File</string>
+    <string name="unable_to_import_file">Unable to import from file</string>
+    <string name="import_file_success">Successfully imported walked hills.</string>
 </resources>
