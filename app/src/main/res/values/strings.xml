@@ -71,4 +71,9 @@
 
     <!-- Notifications -->
     <string name="notification_text">Tracking your walking and bagging hills as you go!</string>
+
+    <!-- Import / Export Activity -->
+    <string name="import_title">Import Hills</string>
+    <string name="import_hill">Import</string>
+    <string name="import_hill_desc">Import walked hills from Hill-Bagging.co.uk CSV download</string>
 </resources>
