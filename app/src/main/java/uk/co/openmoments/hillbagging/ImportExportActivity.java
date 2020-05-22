@@ -11,6 +11,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.opencsv.CSVReader;
+import com.opencsv.CSVReaderBuilder;
 
 import java.io.InputStreamReader;
 import java.text.SimpleDateFormat;
@@ -60,25 +61,25 @@ public class ImportExportActivity extends AppCompatActivity {
     private void importCSVFile(Uri fileUri) {
 
         AppDatabase database = AppDatabase.getDatabase(getApplicationContext());
-        try (CSVReader reader = new CSVReader(new InputStreamReader(Objects.requireNonNull(getContentResolver().openInputStream(fileUri))))) {
-            // Skip header...
-            reader.readNext();
 
-            String[] nextLine;
-            List<HillsWalked> walkedHills = new ArrayList<>();
-            while ((nextLine = reader.readNext()) != null) {
-                int hillId = Integer.parseInt(nextLine[hillColMap.get(HillCols.NUMBER)]);
-                Date date = new SimpleDateFormat("dd/MM/yyyy").parse(nextLine[hillColMap.get(HillCols.CLIMBED)]);
+        try (InputStreamReader inputStreamReader = new InputStreamReader(Objects.requireNonNull(getContentResolver().openInputStream(fileUri)))) {
+            try (CSVReader reader = new CSVReaderBuilder(inputStreamReader).withSkipLines(1).build()) {
+                String[] nextLine;
+                List<HillsWalked> walkedHills = new ArrayList<>();
+                while ((nextLine = reader.readNext()) != null) {
+                    int hillId = Integer.parseInt(nextLine[hillColMap.get(HillCols.NUMBER)]);
+                    Date date = new SimpleDateFormat("dd/MM/yyyy").parse(nextLine[hillColMap.get(HillCols.CLIMBED)]);
 
-                if (database.hillWalkedDAO().getHillById(hillId).isEmpty()) {
-                    HillsWalked hillWalked = new HillsWalked();
-                    hillWalked.setHillId(hillId);
-                    hillWalked.setWalkedDate(java.sql.Date.valueOf(new SimpleDateFormat("yyyy-MM-dd").format(date)));
-                    walkedHills.add(hillWalked);
+                    if (database.hillWalkedDAO().getHillById(hillId).isEmpty()) {
+                        HillsWalked hillWalked = new HillsWalked();
+                        hillWalked.setHillId(hillId);
+                        hillWalked.setWalkedDate(java.sql.Date.valueOf(new SimpleDateFormat("yyyy-MM-dd").format(date)));
+                        walkedHills.add(hillWalked);
+                    }
                 }
+                database.hillWalkedDAO().insertAll(walkedHills.toArray(new HillsWalked[walkedHills.size()]));
+                Toast.makeText(this, getString(R.string.import_file_success), Toast.LENGTH_SHORT).show();
             }
-            database.hillWalkedDAO().insertAll(walkedHills.toArray(new HillsWalked[walkedHills.size()]));
-            Toast.makeText(this, getString(R.string.import_file_success), Toast.LENGTH_SHORT).show();
         } catch (Exception e) {
             Log.e(ImportExportActivity.class.getSimpleName(), "Unable to import from CSV File", e);
             Toast.makeText(this, getString(R.string.unable_to_import_file), Toast.LENGTH_SHORT).show();
