@@ -45,6 +45,9 @@ public class MainActivity extends AppCompatActivity {
         if (!hasPermission(Manifest.permission.INTERNET)) {
             requestPermission(Manifest.permission.INTERNET, R.string.perm_foreground_service_detail);
         }
+        if (!hasPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+            requestPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE, R.string.perm_external_storage_detail);
+        }
     }
 
     @Override
