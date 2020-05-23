@@ -45,6 +45,9 @@ public class MainActivity extends AppCompatActivity {
         if (!hasPermission(Manifest.permission.INTERNET)) {
             requestPermission(Manifest.permission.INTERNET, R.string.perm_foreground_service_detail);
         }
+        if (!hasPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+            requestPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE, R.string.perm_external_storage_detail);
+        }
     }
 
     @Override
@@ -55,9 +58,13 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.settings_menu) {
-            startActivity(new Intent(MainActivity.this, SettingsActivity.class));
-            return true;
+        switch (item.getItemId()) {
+            case R.id.settings_menu:
+                startActivity(new Intent(MainActivity.this, SettingsActivity.class));
+                return true;
+            case R.id.import_export_hill_bagging_menu:
+                startActivity(new Intent(MainActivity.this, ImportExportActivity.class));
+                return true;
         }
         return super.onOptionsItemSelected(item);
     }
