@@ -6,14 +6,21 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.opencsv.CSVReader;
 import com.opencsv.CSVReaderBuilder;
+import com.opencsv.CSVWriter;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -26,9 +33,10 @@ import uk.co.openmoments.hillbagging.database.entities.HillsWalked;
 
 public class ImportExportActivity extends AppCompatActivity {
     private static final int PICKFILE_RESULT_CODE = 1;
+    private static final String TAG = ImportExportActivity.class.getSimpleName();
     private enum HillCols {NUMBER, CLIMBED}
     EnumMap<HillCols, Integer> hillColMap;
-
+    AppDatabase database;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +46,7 @@ public class ImportExportActivity extends AppCompatActivity {
         hillColMap = new EnumMap<>(HillCols.class);
         hillColMap.put(HillCols.NUMBER, 0);
         hillColMap.put(HillCols.CLIMBED, 8);
+        database = AppDatabase.getDatabase(getApplicationContext());
 
         Button button = findViewById(R.id.import_btn);
         button.setOnClickListener(v -> {
@@ -46,6 +55,13 @@ public class ImportExportActivity extends AppCompatActivity {
             chooseFile = Intent.createChooser(chooseFile, getString(R.string.import_file_choose));
             startActivityForResult(chooseFile, PICKFILE_RESULT_CODE);
         });
+
+        button = findViewById(R.id.export_btn);
+        button.setOnClickListener(v -> exportWalkedHills());
+
+        TextView exportText = findViewById(R.id.export_text);
+        exportText.setText(new String(getExportCSV()));
+
     }
 
     @Override
@@ -59,9 +75,6 @@ public class ImportExportActivity extends AppCompatActivity {
 
     @SuppressLint("SimpleDateFormat")
     private void importCSVFile(Uri fileUri) {
-
-        AppDatabase database = AppDatabase.getDatabase(getApplicationContext());
-
         try (InputStreamReader inputStreamReader = new InputStreamReader(Objects.requireNonNull(getContentResolver().openInputStream(fileUri)))) {
             try (CSVReader reader = new CSVReaderBuilder(inputStreamReader).withSkipLines(1).build()) {
                 String[] nextLine;
@@ -81,8 +94,48 @@ public class ImportExportActivity extends AppCompatActivity {
                 Toast.makeText(this, getString(R.string.import_file_success), Toast.LENGTH_SHORT).show();
             }
         } catch (Exception e) {
-            Log.e(ImportExportActivity.class.getSimpleName(), "Unable to import from CSV File", e);
+            Log.e(TAG, "Unable to import from CSV File", e);
             Toast.makeText(this, getString(R.string.unable_to_import_file), Toast.LENGTH_SHORT).show();
         }
+    }
+
+    private void exportWalkedHills() {
+        File outputDir = getApplicationContext().getFilesDir(); //Environment.DIRECTORY_DOCUMENTS);
+        File outputFile = new File(outputDir, "hills_walked.csv");
+
+        try (FileWriter outputFileWriter = new FileWriter(outputFile)) {
+            outputFileWriter.write(new String(getExportCSV()));
+            Toast.makeText(getApplicationContext(), getString(R.string.export_file_success, outputFile.getAbsolutePath()), Toast.LENGTH_LONG).show();
+        } catch (IOException ioe) {
+            Log.e(TAG, "Failed to write output CSV file", ioe);
+            Toast.makeText(getApplicationContext(), getString(R.string.unable_to_export_file), Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @SuppressLint("SimpleDateFormat")
+    private byte[] getExportCSV() {
+        byte[] returnArray = new byte[]{};
+
+        try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
+            OutputStreamWriter streamWriter = new OutputStreamWriter(outputStream);
+            CSVWriter writer = new CSVWriter(streamWriter);
+            String[] headerRecord = {"hillnumber", "climbed"};
+            writer.writeNext(headerRecord);
+
+            List<HillsWalked> hillsWalked = database.hillWalkedDAO().getAll();
+            hillsWalked.forEach(hillWalked -> {
+                String hillId = String.valueOf(hillWalked.getHillId());
+                String walkedDate = new SimpleDateFormat("YYYY-MM-dd").format(hillWalked.getWalkedDate());
+                writer.writeNext(new String[]{hillId, walkedDate});
+            });
+
+            streamWriter.flush();
+
+            returnArray = outputStream.toByteArray();
+        } catch (IOException ioe) {
+            Log.e(TAG, "Failed to create output CSV array: " + ioe.toString());
+        }
+
+        return returnArray;
     }
 }

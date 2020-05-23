@@ -79,4 +79,9 @@
     <string name="import_file_choose">Choose a CSV File</string>
     <string name="unable_to_import_file">Unable to import from file</string>
     <string name="import_file_success">Successfully imported walked hills.</string>
+    <string name="export_hill">Export</string>
+    <string name="export_hill_desc">Export walked hills to upload to Hill-Bagging.co.uk. Either copy the CSV below and paste it into the upload page on Hill-Bagging.co.uk or export it to a file.</string>
+    <string name="export_button">Export</string>
+    <string name="unable_to_export_file">Unable to export to file</string>
+    <string name="export_file_success">Successfully exported walked hills to %1$s.</string>
 </resources>
