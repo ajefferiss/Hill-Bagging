@@ -11,7 +11,6 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Location;
-import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -21,8 +20,6 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.preference.PreferenceManager;
-
-import java.util.Arrays;
 
 import uk.co.openmoments.hillbagging.R;
 import uk.co.openmoments.hillbagging.interfaces.LocationChangedListener;
@@ -38,11 +35,7 @@ public class TrackerService extends Service implements LocationChangedListener {
     private static final float LOCATION_DISTANCE = 10f;
     private static String NOTIFICATION_CHANNEL_ID = "uk.co.openmoments.hillbagging";
     private static String NOTIFICATION_CHANNEL_NAME = "Live Tracker Service";
-
-    private LocationListener[] locationListeners = new LocationListener[] {
-        new HillLocationListener(LocationManager.GPS_PROVIDER, TrackerService.this),
-        new HillLocationListener(LocationManager.NETWORK_PROVIDER, TrackerService.this)
-    };
+    private HillLocationListener gpsLocationListener;
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -52,6 +45,8 @@ public class TrackerService extends Service implements LocationChangedListener {
     @Override
     public void onCreate() {
         super.onCreate();
+
+        gpsLocationListener = new HillLocationListener(LocationManager.GPS_PROVIDER, TrackerService.this);
 
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         Log.d(getClass().getSimpleName(), "track_plot_period: " + sharedPreferences.getString("track_plot_period", "A"));
@@ -69,13 +64,11 @@ public class TrackerService extends Service implements LocationChangedListener {
     public void onDestroy() {
         super.onDestroy();
 
-        Arrays.stream(locationListeners).forEach(locationListener -> {
-            try {
-                locationManager.removeUpdates(locationListener);
-            } catch (Exception ex) {
-                Log.e(TAG, "Failed to remove location listener, ignoring: ", ex);
-            }
-        });
+        try {
+            locationManager.removeUpdates(gpsLocationListener);
+        } catch (Exception ex) {
+            Log.e(TAG, "Failed to remove location listener, ignoring: ", ex);
+        }
     }
 
     @Override
@@ -94,15 +87,9 @@ public class TrackerService extends Service implements LocationChangedListener {
         }
 
         try {
-            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, locationInterval, LOCATION_DISTANCE, locationListeners[1]);
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, locationInterval, LOCATION_DISTANCE, gpsLocationListener);
         } catch (IllegalArgumentException iae) {
             Log.e(TAG, "Network provider does not exist: ", iae);
-        }
-
-        try {
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, locationInterval, LOCATION_DISTANCE, locationListeners[0]);
-        } catch (IllegalArgumentException iae) {
-            Log.e(TAG, "GPS provider does not exist: ", iae);
         }
     }
 
