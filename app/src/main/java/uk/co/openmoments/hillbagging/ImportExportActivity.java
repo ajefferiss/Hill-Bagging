@@ -5,6 +5,7 @@ import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -106,7 +107,10 @@ public class ImportExportActivity extends AppCompatActivity {
         ContentValues contentValues = new ContentValues();
         contentValues.put(MediaStore.Files.FileColumns.DISPLAY_NAME, "hills_walked.csv");
         contentValues.put(MediaStore.Files.FileColumns.MIME_TYPE, "text/csv");
-        contentValues.put(MediaStore.Files.FileColumns.RELATIVE_PATH, Environment.DIRECTORY_DOWNLOADS);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            contentValues.put(MediaStore.Files.FileColumns.RELATIVE_PATH, Environment.DIRECTORY_DOWNLOADS);
+        }
 
         Uri uri = resolver.insert(MediaStore.Files.getContentUri("external"), contentValues);
         if (uri == null) {
