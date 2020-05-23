@@ -87,7 +87,7 @@ public class TrackerService extends Service implements LocationChangedListener {
         try {
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, locationInterval, LOCATION_DISTANCE, gpsLocationListener);
         } catch (IllegalArgumentException iae) {
-            Log.e(TAG, "Network provider does not exist: ", iae);
+            Log.e(TAG, "GPS provider does not exist: ", iae);
         }
     }
 
