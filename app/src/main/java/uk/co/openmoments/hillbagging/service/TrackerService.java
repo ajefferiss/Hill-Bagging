@@ -35,7 +35,7 @@ public class TrackerService extends Service implements LocationChangedListener {
     private static final float LOCATION_DISTANCE = 10f;
     private static String NOTIFICATION_CHANNEL_ID = "uk.co.openmoments.hillbagging";
     private static String NOTIFICATION_CHANNEL_NAME = "Live Tracker Service";
-    private HillLocationListener gpsLocationListener;
+    private HillLocationListener gpsLocationListener = new HillLocationListener(LocationManager.GPS_PROVIDER, TrackerService.this);
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -45,8 +45,6 @@ public class TrackerService extends Service implements LocationChangedListener {
     @Override
     public void onCreate() {
         super.onCreate();
-
-        gpsLocationListener = new HillLocationListener(LocationManager.GPS_PROVIDER, TrackerService.this);
 
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         Log.d(getClass().getSimpleName(), "track_plot_period: " + sharedPreferences.getString("track_plot_period", "A"));
