@@ -1,9 +1,13 @@
 package uk.co.openmoments.hillbagging;
 
 import android.annotation.SuppressLint;
+import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.TextView;
@@ -16,8 +20,6 @@ import com.opencsv.CSVReaderBuilder;
 import com.opencsv.CSVWriter;
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
@@ -100,12 +102,22 @@ public class ImportExportActivity extends AppCompatActivity {
     }
 
     private void exportWalkedHills() {
-        File outputDir = getApplicationContext().getFilesDir(); //Environment.DIRECTORY_DOCUMENTS);
-        File outputFile = new File(outputDir, "hills_walked.csv");
+        ContentResolver resolver = getApplicationContext().getContentResolver();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(MediaStore.Files.FileColumns.DISPLAY_NAME, "hills_walked.csv");
+        contentValues.put(MediaStore.Files.FileColumns.MIME_TYPE, "text/csv");
+        contentValues.put(MediaStore.Files.FileColumns.RELATIVE_PATH, Environment.DIRECTORY_DOWNLOADS);
 
-        try (FileWriter outputFileWriter = new FileWriter(outputFile)) {
+        Uri uri = resolver.insert(MediaStore.Files.getContentUri("external"), contentValues);
+        if (uri == null) {
+            Log.e(TAG, "Unable to export CSV file are URI is null");
+            Toast.makeText(getApplicationContext(), getString(R.string.unable_to_export_file), Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        try (OutputStreamWriter outputFileWriter = new OutputStreamWriter(Objects.requireNonNull(getContentResolver().openOutputStream(uri)))) {
             outputFileWriter.write(new String(getExportCSV()));
-            Toast.makeText(getApplicationContext(), getString(R.string.export_file_success, outputFile.getAbsolutePath()), Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(), getString(R.string.export_file_success), Toast.LENGTH_LONG).show();
         } catch (IOException ioe) {
             Log.e(TAG, "Failed to write output CSV file", ioe);
             Toast.makeText(getApplicationContext(), getString(R.string.unable_to_export_file), Toast.LENGTH_SHORT).show();
