@@ -40,7 +40,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
     }
 
     private void setupLiveTrackingPreferences() {
-        ArrayList<String> tracking_prefs = new ArrayList<>(Arrays.asList("track_plot_period","track_bag_distance"));
+        ArrayList<String> tracking_prefs = new ArrayList<>(Arrays.asList("track_plot_period","track_bag_distance","nearby_distance"));
         tracking_prefs.forEach(preference -> {
             EditTextPreference editTextPreference = getPreferenceManager().findPreference(preference);
             if (editTextPreference == null) {
