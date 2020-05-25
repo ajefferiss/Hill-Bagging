@@ -87,7 +87,7 @@ public class ImportExportActivity extends AppCompatActivity {
                 List<HillsWalked> walkedHills = new ArrayList<>();
                 while ((nextLine = reader.readNext()) != null) {
                     int hillId = Integer.parseInt(nextLine[hillColMap.get(HillCols.NUMBER)]);
-                    Date date = new SimpleDateFormat("dd/MM/yyyy").parse(nextLine[hillColMap.get(HillCols.CLIMBED)]);
+                    Date date = new SimpleDateFormat("yyyy-MM-dd").parse(nextLine[hillColMap.get(HillCols.CLIMBED)]);
 
                     if (database.hillWalkedDAO().getHillById(hillId).isEmpty()) {
                         HillsWalked hillWalked = new HillsWalked();
