@@ -16,6 +16,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.opencsv.CSVReader;
 import com.opencsv.CSVReaderBuilder;
 import com.opencsv.CSVWriter;
@@ -40,6 +41,7 @@ public class ImportExportActivity extends AppCompatActivity {
     private enum HillCols {NUMBER, CLIMBED}
     EnumMap<HillCols, Integer> hillColMap;
     AppDatabase database;
+    private FirebaseAnalytics firebaseAnalytics;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,6 +67,7 @@ public class ImportExportActivity extends AppCompatActivity {
         TextView exportText = findViewById(R.id.export_text);
         exportText.setText(new String(getExportCSV()));
 
+        firebaseAnalytics = FirebaseAnalytics.getInstance(this);
     }
 
     @Override
@@ -99,6 +102,12 @@ public class ImportExportActivity extends AppCompatActivity {
         } catch (Exception e) {
             Log.e(TAG, "Unable to import from CSV File", e);
             Toast.makeText(this, getString(R.string.unable_to_import_file), Toast.LENGTH_SHORT).show();
+
+            Bundle bundle = new Bundle();
+            bundle.putString(FirebaseAnalytics.Param.ITEM_ID, ImportExportActivity.class.getSimpleName());
+            bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "import_error");
+            bundle.putString("full_text", e.toString());
+            firebaseAnalytics.logEvent("import_error", bundle);
         }
     }
 
@@ -125,6 +134,12 @@ public class ImportExportActivity extends AppCompatActivity {
         } catch (IOException ioe) {
             Log.e(TAG, "Failed to write output CSV file", ioe);
             Toast.makeText(getApplicationContext(), getString(R.string.unable_to_export_file), Toast.LENGTH_SHORT).show();
+
+            Bundle bundle = new Bundle();
+            bundle.putString(FirebaseAnalytics.Param.ITEM_ID, ImportExportActivity.class.getSimpleName());
+            bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "export_error");
+            bundle.putString("full_text", ioe.toString());
+            firebaseAnalytics.logEvent("export_error", bundle);
         }
     }
 
