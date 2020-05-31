@@ -213,11 +213,16 @@ public class LiveTrackingFragment extends Fragment implements ActivityCompat.OnR
 
     private void startTrackerService() {
         points.clear();
+        redrawLine();
+
         Toast.makeText(getContext(), R.string.live_tracking_start_description, Toast.LENGTH_SHORT).show();
         requireActivity().startService(new Intent(getActivity(), TrackerService.class));
     }
 
     private void stopTrackerService() {
+        points.clear();
+        redrawLine();
+
         Toast.makeText(getContext(), R.string.live_tracking_stop_description, Toast.LENGTH_SHORT).show();
         requireActivity().stopService(new Intent(getActivity(), TrackerService.class));
     }
