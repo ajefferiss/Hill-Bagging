@@ -12,29 +12,64 @@ import android.view.MenuItem;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
-import androidx.navigation.ui.AppBarConfiguration;
-import androidx.navigation.ui.NavigationUI;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import uk.co.openmoments.hillbagging.ui.home.HomeFragment;
+import uk.co.openmoments.hillbagging.ui.nearby.NearbyFragment;
+import uk.co.openmoments.hillbagging.ui.search.SearchFragment;
+import uk.co.openmoments.hillbagging.ui.tracking.LiveTrackingFragment;
+
 public class MainActivity extends AppCompatActivity {
     private static final int PERMISSION_REQUEST = 1;
+
+    private HomeFragment homeFragment = new HomeFragment();
+    private SearchFragment searchFragment = new SearchFragment();
+    private LiveTrackingFragment liveTrackingFragment = new LiveTrackingFragment();
+    private NearbyFragment nearbyFragment = new NearbyFragment();
+    private FragmentManager fragmentManager = getSupportFragmentManager();
+    private Fragment activeFragment = homeFragment;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        fragmentManager.beginTransaction()
+                .add(R.id.layout_container, nearbyFragment, getString(R.string.title_nearby))
+                .hide(nearbyFragment)
+                .add(R.id.layout_container, liveTrackingFragment, getString(R.string.title_live_tracking))
+                .hide(liveTrackingFragment)
+                .add(R.id.layout_container, searchFragment, getString(R.string.title_search))
+                .hide(searchFragment)
+                .add(R.id.layout_container, homeFragment, getString(R.string.title_home))
+                .commit();
         BottomNavigationView navView = findViewById(R.id.nav_view);
-        // Passing each menu ID as a set of Ids because each
-        // menu should be considered as top level destinations.
-        AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.navigation_home, R.id.navigation_search, R.id.navigation_live_track, R.id.navigation_nearby)
-                .build();
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
-        NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
-        NavigationUI.setupWithNavController(navView, navController);
+        navView.setOnNavigationItemSelectedListener(item -> {
+            switch (item.getItemId()) {
+                case R.id.navigation_home:
+                    fragmentManager.beginTransaction().hide(activeFragment).show(homeFragment).commit();
+                    activeFragment = homeFragment;
+                    return true;
+                case R.id.navigation_search:
+                    fragmentManager.beginTransaction().hide(activeFragment).show(searchFragment).commit();
+                    activeFragment = searchFragment;
+                    return true;
+                case R.id.navigation_live_track:
+                    fragmentManager.beginTransaction().hide(activeFragment).show(liveTrackingFragment).commit();
+                    activeFragment = liveTrackingFragment;
+                    return true;
+                case R.id.navigation_nearby:
+                    fragmentManager.beginTransaction().hide(activeFragment).show(nearbyFragment).commit();
+                    activeFragment = nearbyFragment;
+                    return true;
+                default:
+                    return false;
+            }
+        });
 
         if (!hasPermission(Manifest.permission.ACCESS_FINE_LOCATION)) {
             requestPermission(Manifest.permission.ACCESS_FINE_LOCATION, R.string.perm_fine_location_detail);
