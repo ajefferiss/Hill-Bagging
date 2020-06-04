@@ -22,9 +22,11 @@ public class HillDB {
 
     public static String DATABASE_NAME = "hill_bagging.db";
     private static String RELATIVE_PATH = "app/src/main/assets/database/";
-    private static String SQL_PATH = "lib/src/main/java/uk/co/openmoments/lib/updater/sql/";
+    private static String UPDATER_PATH = "lib/src/main/java/uk/co/openmoments/lib/updater/";
+    private static String SQL_PATH = UPDATER_PATH + "sql/";
+    private static String SQL_MIGRATION_PATH = UPDATER_PATH + "migration_scripts/";
     private String db_uri = "";
-    private String sql_migration_path = "";
+    private String sql_migration_file = "";
     private boolean database_exists;
     private int outputCount = 0;
     private enum HillCols {
@@ -37,7 +39,7 @@ public class HillDB {
             String assetsPath = new File(RELATIVE_PATH).getCanonicalPath();
             database_exists = new File(assetsPath + "\\" + DATABASE_NAME).exists();
             db_uri = "jdbc:sqlite:" + assetsPath + "\\" + DATABASE_NAME;
-            sql_migration_path = Paths.get(assetsPath, "db_migration.sql").toAbsolutePath().toString();
+            sql_migration_file = Paths.get(SQL_MIGRATION_PATH, "db_migration.sql").toAbsolutePath().toString();
 
             hillColMap = new EnumMap<>(HillCols.class);
             hillColMap.put(HillCols.NUMBER, 0);
@@ -59,7 +61,7 @@ public class HillDB {
     }
 
     public void update(String hillCSV) {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(sql_migration_path))) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(sql_migration_file))) {
             try (Connection conn = DriverManager.getConnection(db_uri)){
                 if (conn != null) {
                     if (!database_exists) {
