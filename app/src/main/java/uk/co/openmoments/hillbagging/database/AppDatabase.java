@@ -6,6 +6,8 @@ import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
 import androidx.room.TypeConverters;
+import androidx.room.migration.Migration;
+import androidx.sqlite.db.SupportSQLiteDatabase;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -19,8 +21,9 @@ import uk.co.openmoments.hillbagging.database.entities.Classification;
 import uk.co.openmoments.hillbagging.database.entities.Hill;
 import uk.co.openmoments.hillbagging.database.entities.HillClassification;
 import uk.co.openmoments.hillbagging.database.entities.HillsWalked;
+import uk.co.openmoments.hillbagging.database.migrations.Migrate2_3;
 
-@Database(entities = {Hill.class, Classification.class, HillsWalked.class, HillClassification.class}, version = 2)
+@Database(entities = {Hill.class, Classification.class, HillsWalked.class, HillClassification.class}, version = 3)
 @TypeConverters({DateConverter.class})
 public abstract class AppDatabase extends RoomDatabase {
     public abstract HillDao hillDao();
@@ -42,10 +45,21 @@ public abstract class AppDatabase extends RoomDatabase {
                     INSTANCE = Room.databaseBuilder(context.getApplicationContext(),
                             AppDatabase.class,
                             "hill_bagging.db"
-                    ).createFromAsset("database/hill_bagging.db").fallbackToDestructiveMigrationFrom(1, 2).allowMainThreadQueries().build();
+                    )
+                    .createFromAsset("database/hill_bagging.db")
+                    .addMigrations(MIGRATION_2_3)
+                    .allowMainThreadQueries()
+                    .build();
                 }
             }
         }
         return INSTANCE;
     }
+
+    static final Migration MIGRATION_2_3 = new Migration(2, 3) {
+        @Override
+        public void migrate(SupportSQLiteDatabase database) {
+            database.execSQL(new Migrate2_3().getSQL());
+        }
+    };
 }
